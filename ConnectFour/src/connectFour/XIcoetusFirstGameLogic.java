@@ -10,6 +10,12 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     private int[] nextCoinPos;
     //The maximum amount of adjacent 4 connects in one diagonal. 
     private int diaLength;
+    //Base pointers for diagonal arrays.
+    private int leftAnchorPointer;
+    private int rightAnchorPointer;
+    
+    //test pointer for easy bot
+    private int nextMove;
     
     public XIcoetusFirstGameLogic() {
         //TODO Write your implementation for this method
@@ -22,16 +28,21 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         gameBoard = new int[x][y];
         nextCoinPos = new int[x];
         diaLength = (x-3+y-3)-1;
+        leftAnchorPointer = y - 4;
+        rightAnchorPointer = x - 4;
+        //test pointer for easy bot
+        nextMove = x-1;
         //TODO Write your implementation for this method
     }
 	
     public Winner gameFinished() {
-    	int[] colCount = new int [y];
-    	int[] rowCount = new int[x];
+    	int[] colCount = new int [x];
+    	int[] rowCount = new int[y];
     	int[] leftDiaCount = new int[diaLength];
     	int[] rightDiaCount = new int[diaLength];
-        for(int i = 0; i < gameBoard.length-1; i++) {
-        	for(int j = 0; j < gameBoard[0].length-1; j++) {
+    	int diaArrayPos;
+        for(int i = 0; i < x; i++) {
+        	for(int j = 0; j < y; j++) {
         		colCount[i] = updateCellCount(gameBoard[i][j], colCount[i]);
         		if(colCount[i] == -4) {
         			return Winner.PLAYER1;
@@ -39,13 +50,34 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         		if(colCount[i] == 4) {
         			return Winner.PLAYER2;
         		}
-        		rowCount[j] = updateCellCount(gameBoard[i][j], colCount[j]);
+        		rowCount[j] = updateCellCount(gameBoard[i][j], rowCount[j]);
         		if(rowCount[j] == -4) {
         			return Winner.PLAYER1;
         		}
         		if(rowCount[j] == 4) {
         			return Winner.PLAYER2;
         		}
+        		diaArrayPos = leftAnchorPointer-j+i;
+        		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
+        			leftDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], leftDiaCount[diaArrayPos]);
+            		if(leftDiaCount[diaArrayPos] == -4) {
+            			return Winner.PLAYER1;
+            		}
+            		if(leftDiaCount[diaArrayPos] == 4) {
+            			return Winner.PLAYER2;
+            		}
+        		}
+        		diaArrayPos = rightAnchorPointer-((x-1)-i)+j;
+        		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
+        			rightDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], rightDiaCount[diaArrayPos]);
+            		if(rightDiaCount[diaArrayPos] == -4) {
+            			return Winner.PLAYER1;
+            		}
+            		if(rightDiaCount[diaArrayPos] == 4) {
+            			return Winner.PLAYER2;
+            		}
+        		}
+
         	}
         }
         return Winner.NOT_FINISHED;
@@ -86,11 +118,20 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 		nextCoinPos[column]++;
 		printGameboard();
 	}
-
+	
+	public int decideNextMove() {
+		if(nextCoinPos[nextMove] >= y)
+		{
+			nextMove = nextMove - 1;
+		}
+		return nextMove;
+	}
+	
 	/**
 	 * 
 	 * @return The column in which it is best to place the coin
 	 */
+	/*
 	public int decideNextMove() {
 		Action bestAction = null;
 		// AI is blue who wants to maximize the utility
@@ -109,7 +150,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 		}
 		return bestAction.getColumn();
 	}
-
+	*/
 	private void minValue(Action appliedAction) {
 		if(gameFinished() == Winner.NOT_FINISHED){
 		Action bestAction = null;
