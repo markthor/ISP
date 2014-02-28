@@ -1,10 +1,12 @@
 package connectFour;
 
+import java.util.List;
+
 public class XIcoetusFirstGameLogic implements IGameLogic {
     private int x = 0;
     private int y = 0;
     private int playerID;
-    private int[][] gameboard;
+    private int[][] gameBoard;
     private int[] nextCoinPos;
     //The maximum amount of adjacent 4 connects in one diagonal. 
     private int diaLength;
@@ -17,7 +19,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         this.x = x;
         this.y = y;
         this.playerID = playerID;
-        gameboard = new int[x][y];
+        gameBoard = new int[x][y];
         nextCoinPos = new int[x];
         diaLength = (x-3+y-3)-1;
         //TODO Write your implementation for this method
@@ -28,16 +30,16 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     	int[] rowCount = new int[x];
     	int[] leftDiaCount = new int[diaLength];
     	int[] rightDiaCount = new int[diaLength];
-        for(int i = 0; i < gameboard.length-1; i++) {
-        	for(int j = 0; j < gameboard[0].length-1; j++) {
-        		colCount[i] = updateCellCount(gameboard[i][j], colCount[i]);
+        for(int i = 0; i < gameBoard.length-1; i++) {
+        	for(int j = 0; j < gameBoard[0].length-1; j++) {
+        		colCount[i] = updateCellCount(gameBoard[i][j], colCount[i]);
         		if(colCount[i] == -4) {
         			return Winner.PLAYER1;
         		}
         		if(colCount[i] == 4) {
         			return Winner.PLAYER2;
         		}
-        		rowCount[j] = updateCellCount(gameboard[i][j], colCount[j]);
+        		rowCount[j] = updateCellCount(gameBoard[i][j], colCount[j]);
         		if(rowCount[j] == -4) {
         			return Winner.PLAYER1;
         		}
@@ -79,26 +81,89 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     	return 0;
     }
 
+	public void insertCoin(int column, int playerID) {
+		gameBoard[column][nextCoinPos[column]] = playerID;
+		nextCoinPos[column]++;
+		printGameboard();
+	}
 
-    public void insertCoin(int column, int playerID) {
-    	gameboard[column][nextCoinPos[column]] = playerID;
-    	nextCoinPos[column]++;
-    	printGameboard();
-    }
+	/**
+	 * 
+	 * @return The column in which it is best to place the coin
+	 */
+	public int decideNextMove() {
+		Action bestAction = null;
+		// AI is blue who wants to maximize the utility
+		List<Action> actions = Action.getActions(x, y, playerID, gameBoard);
+		for (Action a : actions) {
+			gameBoard = a.apply(gameBoard);
+			if (playerID == 1) {
+				maxValue(a);
+			} else {
+				minValue(a);
+			}
+			if (bestAction == null || bestAction.getUtility() > a.getUtility()) {
+				bestAction = a;
+			}
+			gameBoard = a.undo(gameBoard);
+		}
+		return bestAction.getColumn();
+	}
 
-    public int decideNextMove() {
-        //TODO Write your implementation for this method
-        return 0;
-    }
-    
-    private void printGameboard() {
-    	for(int i = y-1; 0 <= i; i--) {
-    		for(int j = 0; j < x; j++) {
-    			System.out.print(gameboard[j][i] + " ");
+	private void minValue(Action appliedAction) {
+		if(gameFinished() == Winner.NOT_FINISHED){
+		Action bestAction = null;
+		
+		List<Action> actions = Action.getActions(x, y, 1, gameBoard);
+		for (Action a : actions) {
+			gameBoard = a.apply(gameBoard);
+			minValue(a);
+			if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
+				bestAction = a;
+			}
+			gameBoard = a.undo(gameBoard);
+		}
+		
+	} else if(gameFinished() == Winner.PLAYER1) {
+		appliedAction.setUtility(1d);;
+	} else if(gameFinished() == Winner.PLAYER2) {
+		appliedAction.setUtility(-1d);
+	} else {
+		appliedAction.setUtility(0d);
+	}
+	}
+
+	public void maxValue(Action appliedAction){
+		if(gameFinished() == Winner.NOT_FINISHED){
+    		Action bestAction = null;
+    		
+    		List<Action> actions = Action.getActions(x, y, 1, gameBoard);
+    		for (Action a : actions) {
+    			gameBoard = a.apply(gameBoard);
+    			maxValue(a);
+				if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
+					bestAction = a;
+				}
+				gameBoard = a.undo(gameBoard);
     		}
-    		System.out.println();
+    		
+    	} else if(gameFinished() == Winner.PLAYER1) {
+    		appliedAction.setUtility(1d);;
+    	} else if(gameFinished() == Winner.PLAYER2) {
+    		appliedAction.setUtility(-1d);
+    	} else {
+    		appliedAction.setUtility(0d);
     	}
-		System.out.println();
     }
+
+	private void printGameboard() {
+		for (int i = y - 1; 0 <= i; i--) {
+			for (int j = 0; j < x; j++) {
+				System.out.print(gameBoard[j][i] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
 
 }
