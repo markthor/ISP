@@ -5,6 +5,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     private int y = 0;
     private int playerID;
     private int[][] gameboard;
+    private int[] nextCoinPos;
     
     public XIcoetusFirstGameLogic() {
         //TODO Write your implementation for this method
@@ -15,6 +16,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         this.y = y;
         this.playerID = playerID;
         gameboard = new int[x][y];
+        nextCoinPos = new int[x];
         //TODO Write your implementation for this method
     }
 	
@@ -25,12 +27,24 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 
 
     public void insertCoin(int column, int playerID) {
-        
+    	gameboard[column][nextCoinPos[column]] = playerID;
+    	nextCoinPos[column]++;
+    	printGameboard();
     }
 
     public int decideNextMove() {
         //TODO Write your implementation for this method
         return 0;
+    }
+    
+    private void printGameboard() {
+    	for(int i = y-1; 0 <= i; i--) {
+    		for(int j = 0; j < x; j++) {
+    			System.out.print(gameboard[j][i] + " ");
+    		}
+    		System.out.println();
+    	}
+		System.out.println();
     }
 
 }
