@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Action {
-	int column, row, playerID;
-	double utility = 0d;
+	private int column, row, playerID;
+	private double utility = 0d;
 	
 	public Action(int column, int row, int playerID){
 		this.column = column;
