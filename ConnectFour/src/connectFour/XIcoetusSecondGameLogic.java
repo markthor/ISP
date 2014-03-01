@@ -3,7 +3,7 @@ package connectFour;
 import java.io.Console;
 import java.util.List;
 
-public class XIcoetusFirstGameLogic implements IGameLogic {
+public class XIcoetusSecondGameLogic implements IGameLogic {
 	private int x = 0;
     private int y = 0;
     private int playerID;
@@ -18,7 +18,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     //test pointer for easy bot
     private int nextMove;
     
-    public XIcoetusFirstGameLogic() {
+    public XIcoetusSecondGameLogic() {
         //TODO Write your implementation for this method
     }
 
@@ -28,10 +28,6 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         this.playerID = playerID;
         gameBoard = new int[x][y];
         nextCoinPos = new int[x];
-        for (int i = 0; i < x; i++){
-        	nextCoinPos[i] = y-1;
-        }
-        
         diaLength = (x-3+y-3)-1;
         leftAnchorPointer = y - 4;
         rightAnchorPointer = x - 4;
@@ -85,19 +81,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 
         	}
         }
-        if(tieCheck()){
-        	return Winner.TIE;
-        }
-        
         return Winner.NOT_FINISHED;
-    }
-    
-    private boolean tieCheck(){
-    	int filled = 0;
-    	for(int i = 0; i < x; i++){
-    		if(gameBoard[i][0] != 0) filled++;
-    	}
-    	return filled == x;
     }
     
     private int updateCellCount(int current, int count) {
@@ -132,7 +116,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 
 	public void insertCoin(int column, int playerID) {
 		gameBoard[column][nextCoinPos[column]] = playerID;
-		nextCoinPos[column]--;
+		nextCoinPos[column]++;
 		printGameboard();
 	}
 
@@ -141,13 +125,13 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 	 * @return The column in which it is best to place the coin
 	 */
 	public int decideNextMove() {
-		System.out.println("Started");
 		Action bestAction = null;
 		// AI is blue who wants to maximize the utility
 		List<Action> actions = Action.getActions(x, y, playerID, gameBoard);
 		for (Action a : actions) {
+			System.out.println("New action");
 			gameBoard = a.apply(gameBoard);
-			if (playerID != 1) {
+			if (playerID == 1) {
 				maxValue(a);
 			} else {
 				minValue(a);
@@ -164,10 +148,10 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 		if (gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
 
-			List<Action> actions = Action.getActions(x, y, 2, gameBoard);
+			List<Action> actions = Action.getActions(x, y, 1, gameBoard);
 			for (Action a : actions) {
 				gameBoard = a.apply(gameBoard);
-				maxValue(a);
+				minValue(a);
 				if (bestAction == null
 						|| bestAction.getUtility() < a.getUtility()) {
 					bestAction = a;
@@ -177,6 +161,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 
 		} else if (gameFinished() == Winner.PLAYER1) {
 			appliedAction.setUtility(1d);
+			;
 		} else if (gameFinished() == Winner.PLAYER2) {
 			appliedAction.setUtility(-1d);
 		} else {
@@ -191,7 +176,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 			List<Action> actions = Action.getActions(x, y, 1, gameBoard);
 			for (Action a : actions) {
 				gameBoard = a.apply(gameBoard);
-				minValue(a);
+				maxValue(a);
 				if (bestAction == null
 						|| bestAction.getUtility() < a.getUtility()) {
 					bestAction = a;
@@ -201,11 +186,21 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 
 		} else if (gameFinished() == Winner.PLAYER1) {
 			appliedAction.setUtility(1d);
+			;
 		} else if (gameFinished() == Winner.PLAYER2) {
 			appliedAction.setUtility(-1d);
 		} else {
 			appliedAction.setUtility(0d);
 		}
+	}
+	
+	private double utility(){
+		
+		
+		
+		
+		
+		return 0d;
 	}
 
 	private void printGameboard() {

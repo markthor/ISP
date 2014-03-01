@@ -27,6 +27,7 @@ public class Action {
 			for(int j = rows-1; 0 <= j; j--) {
 				if(gameBoard[i][j] == 0) {
 					actions.add(new Action(i, j, playerID));
+					break;
 				}
 			}
 		}
@@ -34,7 +35,14 @@ public class Action {
 	}
 	
 	public int[][] apply(int[][] gameBoard){
+		//System.out.println("BEFORE " + toString());
+		//printGameboard(gameBoard);
+		
 		gameBoard[column][row] = playerID;
+		
+		//System.out.println("AFTER");
+		//printGameboard(gameBoard);
+		
 		return gameBoard;
 	}
 	
@@ -76,5 +84,20 @@ public class Action {
 	 */
 	public int getPlayerID() {
 		return playerID;
+	}
+	
+	public String toString() {
+		return "Col: " + column + " - Row: " + row;
+	}
+	
+	
+	private void printGameboard(int[][] gameBoard) {
+		for (int i = 4 - 1; 0 <= i; i--) {
+			for (int j = 0; j < 4; j++) {
+				System.out.print(gameBoard[j][i] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println();
 	}
 }
