@@ -269,7 +269,7 @@ public class XIcoetusSecondGameLogic implements IGameLogic {
         }*/
 	}
 	
-	private int updateCellCount(int current, int count) {
+	/*private int updateCellCount(int current, int count) {
     	if(count == 0) {
     		if(current == 1) {
     			return 1;
@@ -297,7 +297,7 @@ public class XIcoetusSecondGameLogic implements IGameLogic {
     		
     	}
     	return 0;
-    }
+    }*/
 
 	private void printGameboard() {
 		for (int i = rows - 1; 0 <= i; i--) {

@@ -16,7 +16,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     private int rightAnchorPointer;
     
     //test pointer for easy bot
-    private int nextMove;
+    //private int nextMove;
     
     public XIcoetusFirstGameLogic() {
         //TODO Write your implementation for this method
@@ -36,7 +36,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         leftAnchorPointer = rows - 4;
         rightAnchorPointer = columns - 4;
         //test pointer for easy bot
-        nextMove = columns-1;
+        //nextMove = columns-1;
         //TODO Write your implementation for this method
     }
 

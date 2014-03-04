@@ -1,7 +1,7 @@
 package connectFour;
 
 public class Utility {
-	int columns, rows, diaLength, leftAnchorPoint, rightAnchorPoint;
+	int columns, rows, diaLength, leftAnchorPointer, rightAnchorPointer;
 	
 	//Arrays used to count consecutive zeroes
 	int[] colZeroCount, rowZeroCount, leftDiaZeroCount, rightDiaZeroCount;
@@ -10,8 +10,8 @@ public class Utility {
 		this.columns = columns;
 		this.rows = rows;
 		diaLength = columns-3+rows-3-1;
-		leftAnchorPoint = rows-4;
-		rightAnchorPoint = columns -4;
+		leftAnchorPointer = rows-4;
+		rightAnchorPointer = columns -4;
 		
 		
 		colZeroCount = new int [columns];
