@@ -1,19 +1,20 @@
 package connectFour;
 
-import java.io.Console;
 import java.util.List;
 
 public class XIcoetusSecondGameLogic implements IGameLogic {
-	private int x = 0;
-    private int y = 0;
+	private int columns = 0;
+    private int rows = 0;
     private int playerID;
     private int[][] gameBoard;
     private int[] nextCoinPos;
+    
     //The maximum amount of adjacent 4 connects in one diagonal. 
     private int diaLength;
     //Base pointers for diagonal arrays.
     private int leftAnchorPointer;
     private int rightAnchorPointer;
+    
     
     //test pointer for easy bot
     private int nextMove;
@@ -23,11 +24,15 @@ public class XIcoetusSecondGameLogic implements IGameLogic {
     }
 
     public void initializeGame(int x, int y, int playerID) {
-        this.x = x;
-        this.y = y;
+        this.columns = x;
+        this.rows = y;
         this.playerID = playerID;
         gameBoard = new int[x][y];
         nextCoinPos = new int[x];
+        /*for (int i = 0; i < x; i++){
+        	nextCoinPos[i] = y-1;
+        }*/
+        
         diaLength = (x-3+y-3)-1;
         leftAnchorPointer = y - 4;
         rightAnchorPointer = x - 4;
@@ -37,13 +42,13 @@ public class XIcoetusSecondGameLogic implements IGameLogic {
     }
 
     public Winner gameFinished() {
-    	int[] colCount = new int [x];
-    	int[] rowCount = new int[y];
+    	int[] colCount = new int [columns];
+    	int[] rowCount = new int[rows];
     	int[] leftDiaCount = new int[diaLength];
     	int[] rightDiaCount = new int[diaLength];
     	int diaArrayPos;
-        for(int i = 0; i < x; i++) {
-        	for(int j = 0; j < y; j++) {
+        for(int i = 0; i < columns; i++) {
+        	for(int j = 0; j < rows; j++) {
         		colCount[i] = updateCellCount(gameBoard[i][j], colCount[i]);
         		if(colCount[i] == -4) {
         			return Winner.PLAYER1;
@@ -68,7 +73,7 @@ public class XIcoetusSecondGameLogic implements IGameLogic {
             			return Winner.PLAYER2;
             		}
         		}
-        		diaArrayPos = rightAnchorPointer-((x-1)-i)+j;
+        		diaArrayPos = rightAnchorPointer-((columns-1)-i)+j;
         		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
         			rightDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], rightDiaCount[diaArrayPos]);
             		if(rightDiaCount[diaArrayPos] == -4) {
@@ -81,7 +86,19 @@ public class XIcoetusSecondGameLogic implements IGameLogic {
 
         	}
         }
+        if(tieCheck()){
+        	return Winner.TIE;
+        }
+        
         return Winner.NOT_FINISHED;
+    }
+    
+    private boolean tieCheck(){
+    	int filled = 0;
+    	for(int i = 0; i < columns; i++){
+    		if(gameBoard[i][rows-1] != 0) filled++;
+    	}
+    	return filled == columns;
     }
     
     private int updateCellCount(int current, int count) {
@@ -125,87 +142,166 @@ public class XIcoetusSecondGameLogic implements IGameLogic {
 	 * @return The column in which it is best to place the coin
 	 */
 	public int decideNextMove() {
+		System.out.println("Started");
 		Action bestAction = null;
 		// AI is blue who wants to maximize the utility
-		List<Action> actions = Action.getActions(x, y, playerID, gameBoard);
+		List<Action> actions = Action.getActions(columns, rows, playerID, gameBoard);
 		for (Action a : actions) {
-			System.out.println("New action");
 			gameBoard = a.apply(gameBoard);
 			if (playerID == 1) {
-				maxValue(a);
+				minValue(a, 1);
+				if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
+					bestAction = a;
+				}
 			} else {
-				minValue(a);
-			}
-			if (bestAction == null || bestAction.getUtility() > a.getUtility()) {
-				bestAction = a;
+				maxValue(a, 1);
+				if (bestAction == null || a.getUtility() < bestAction.getUtility()) {
+					bestAction = a;
+				}
 			}
 			gameBoard = a.undo(gameBoard);
 		}
 		return bestAction.getColumn();
 	}
 
-	private void minValue(Action appliedAction) {
+	private void minValue(Action appliedAction, int depth) {
 		if (gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
 
-			List<Action> actions = Action.getActions(x, y, 1, gameBoard);
+			List<Action> actions = Action.getActions(columns, rows, 2, gameBoard);
 			for (Action a : actions) {
 				gameBoard = a.apply(gameBoard);
-				minValue(a);
+				maxValue(a, depth+1);
 				if (bestAction == null
-						|| bestAction.getUtility() < a.getUtility()) {
+						|| a.getUtility() < bestAction.getUtility()) {
 					bestAction = a;
 				}
 				gameBoard = a.undo(gameBoard);
 			}
-
+			appliedAction.setUtility(bestAction.getUtility());
 		} else if (gameFinished() == Winner.PLAYER1) {
-			appliedAction.setUtility(1d);
-			;
+			appliedAction.setUtility(1d/depth);
 		} else if (gameFinished() == Winner.PLAYER2) {
-			appliedAction.setUtility(-1d);
+			appliedAction.setUtility(-1d/depth);
 		} else {
 			appliedAction.setUtility(0d);
 		}
+		
 	}
 
-	public void maxValue(Action appliedAction) {
+	public void maxValue(Action appliedAction, int depth) {
 		if (gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
 
-			List<Action> actions = Action.getActions(x, y, 1, gameBoard);
+			List<Action> actions = Action.getActions(columns, rows, 1, gameBoard);
 			for (Action a : actions) {
 				gameBoard = a.apply(gameBoard);
-				maxValue(a);
+				minValue(a, depth+1);
 				if (bestAction == null
 						|| bestAction.getUtility() < a.getUtility()) {
 					bestAction = a;
 				}
 				gameBoard = a.undo(gameBoard);
 			}
-
+			appliedAction.setUtility(bestAction.getUtility());
 		} else if (gameFinished() == Winner.PLAYER1) {
-			appliedAction.setUtility(1d);
-			;
+			appliedAction.setUtility(1d/depth);
 		} else if (gameFinished() == Winner.PLAYER2) {
-			appliedAction.setUtility(-1d);
+			appliedAction.setUtility(-1d/depth);
 		} else {
 			appliedAction.setUtility(0d);
 		}
 	}
 	
-	private double utility(){
-		
-		
-		
-		
-		
-		return 0d;
+	private void utility(Action a){
+		int[] colCount = new int [columns];
+    	int[] rowCount = new int[rows];
+    	int[] leftDiaCount = new int[diaLength];
+    	int[] rightDiaCount = new int[diaLength];
+    	int diaArrayPos;
+    	
+    	double utility = 0;
+    	final double twoRow = 30;
+    	final double threeRow = 75;
+    	final double fourRow = 1000;
+    	
+    	
+        for(int i = 0; i < columns; i++) {
+        	for(int j = 0; j < rows; j++) {
+        		colCount[i] = updateCellCount(gameBoard[i][j], colCount[i]);
+        		if(colCount[i] == 4) {
+        			utility += fourRow;
+        		}
+        		if(colCount[i] == -4) {
+        			utility -= fourRow;
+        		}
+        		rowCount[j] = updateCellCount(gameBoard[i][j], rowCount[j]);
+        		if(rowCount[j] == 4) {
+        			utility += fourRow;
+        		}
+        		if(rowCount[j] == -4) {
+        			utility -= fourRow;
+        		}
+        		diaArrayPos = leftAnchorPointer-j+i;
+        		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
+        			leftDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], leftDiaCount[diaArrayPos]);
+            		if(leftDiaCount[diaArrayPos] == 4) {
+            			utility += fourRow;
+            		}
+            		if(leftDiaCount[diaArrayPos] == -4) {
+            			utility -= fourRow;
+            		}
+        		}
+        		diaArrayPos = rightAnchorPointer-((columns-1)-i)+j;
+        		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
+        			rightDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], rightDiaCount[diaArrayPos]);
+            		if(rightDiaCount[diaArrayPos] == +4) {
+            			utility += fourRow;
+            		}
+            		if(rightDiaCount[diaArrayPos] == -4) {
+            			utility -= fourRow;
+            		}
+        		}
+        	}
+        }
+        /*if(tieCheck()){
+        	return Winner.TIE;
+        }*/
 	}
+	
+	private int updateCellCount(int current, int count) {
+    	if(count == 0) {
+    		if(current == 1) {
+    			return 1;
+    		}
+    		else if(current == 2) {
+    			return -1;
+    		}
+    	} else {
+    		if(count < 0) {
+        		if(current == 1) {
+        			return 1;        			
+        		}
+        		else if(current == 2) {
+        			return count-1;
+        		}
+    		}
+    		if(count > 0) {
+        		if(current == 1) {
+        			return count+1;
+        		}
+        		else if(current == 2) {
+        			return -1;
+        		}
+    		}
+    		
+    	}
+    	return 0;
+    }
 
 	private void printGameboard() {
-		for (int i = y - 1; 0 <= i; i--) {
-			for (int j = 0; j < x; j++) {
+		for (int i = rows - 1; 0 <= i; i--) {
+			for (int j = 0; j < columns; j++) {
 				System.out.print(gameBoard[j][i] + " ");
 			}
 			System.out.println();

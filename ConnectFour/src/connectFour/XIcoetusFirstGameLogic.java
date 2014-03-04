@@ -22,21 +22,21 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         //TODO Write your implementation for this method
     }
 
-    public void initializeGame(int x, int y, int playerID) {
-        this.columns = x;
-        this.rows = y;
+    public void initializeGame(int columns, int rows, int playerID) {
+        this.columns = columns;
+        this.rows = rows;
         this.playerID = playerID;
-        gameBoard = new int[x][y];
-        nextCoinPos = new int[x];
+        gameBoard = new int[columns][rows];
+        nextCoinPos = new int[columns];
         /*for (int i = 0; i < x; i++){
         	nextCoinPos[i] = y-1;
         }*/
         
-        diaLength = (x-3+y-3)-1;
-        leftAnchorPointer = y - 4;
-        rightAnchorPointer = x - 4;
+        diaLength = (columns-3+rows-3)-1;
+        leftAnchorPointer = rows - 4;
+        rightAnchorPointer = columns - 4;
         //test pointer for easy bot
-        nextMove = x-1;
+        nextMove = columns-1;
         //TODO Write your implementation for this method
     }
 
