@@ -1,6 +1,5 @@
 package connectFour;
 
-import java.io.Console;
 import java.util.List;
 
 public class XIcoetusFirstGameLogic implements IGameLogic {
@@ -9,6 +8,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     private int playerID;
     private int[][] gameBoard;
     private int[] nextCoinPos;
+    
     //The maximum amount of adjacent 4 connects in one diagonal. 
     private int diaLength;
     //Base pointers for diagonal arrays.
@@ -147,13 +147,16 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 		List<Action> actions = Action.getActions(columns, rows, playerID, gameBoard);
 		for (Action a : actions) {
 			gameBoard = a.apply(gameBoard);
-			if (playerID != 1) {
-				maxValue(a, 1);
-			} else {
+			if (playerID == 1) {
 				minValue(a, 1);
-			}
-			if (bestAction == null || bestAction.getUtility() > a.getUtility()) {
-				bestAction = a;
+				if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
+					bestAction = a;
+				}
+			} else {
+				maxValue(a, 1);
+				if (bestAction == null || a.getUtility() < bestAction.getUtility()) {
+					bestAction = a;
+				}
 			}
 			gameBoard = a.undo(gameBoard);
 		}
@@ -169,7 +172,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 				gameBoard = a.apply(gameBoard);
 				maxValue(a, depth+1);
 				if (bestAction == null
-						|| bestAction.getUtility() < a.getUtility()) {
+						|| a.getUtility() < bestAction.getUtility()) {
 					bestAction = a;
 				}
 				gameBoard = a.undo(gameBoard);
