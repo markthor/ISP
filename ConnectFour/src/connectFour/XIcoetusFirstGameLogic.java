@@ -38,6 +38,14 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         //test pointer for easy bot
         //nextMove = columns-1;
         //TODO Write your implementation for this method
+        
+        
+        
+        
+        //TESTING
+        Utility util = new Utility(columns, rows);
+        int[][] gb = new int[][]{{1,1,0,1}, {1,0,0,0},{0,0,0,0},{0,0,0,0}};
+        util.utility(gb);
     }
 
     public Winner gameFinished() {
