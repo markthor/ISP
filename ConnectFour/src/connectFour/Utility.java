@@ -4,10 +4,10 @@ public class Utility {
 	int columns, rows, diaLength, leftAnchorPointer, rightAnchorPointer;
 	
 	//General arrays
-	int[] colCount, rowCount, leftDiaCount, rightDiaCount;
+	int[] colCount, rowCount, rowSndCount, leftDiaCount, rightDiaCount;
 	
 	//Arrays used to count consecutive zeroes
-	int[] colZeroCount, rowZeroCount, leftDiaZeroCount, rightDiaZeroCount;
+	int[] colZeroCount, rowZeroCount, rowSndZeroCount, leftDiaZeroCount, rightDiaZeroCount;
 	
 	public Utility(int columns, int rows){
 		this.columns = columns;
@@ -21,6 +21,7 @@ public class Utility {
 	public double utility(int[][] gameBoard){
 		colCount = new int [columns];
     	rowCount = new int[rows];
+    	rowSndCount = new int[rows];
     	leftDiaCount = new int[diaLength];
     	rightDiaCount = new int[diaLength];
     	int diaArrayPos;
@@ -34,6 +35,7 @@ public class Utility {
     	//Zero stuff
     	colZeroCount = new int[columns];
 		rowZeroCount = new int[rows];
+		rowSndZeroCount = new int[columns];
 		leftDiaZeroCount = new int[diaLength];
 		rightDiaZeroCount = new int[diaLength];
     	
@@ -55,20 +57,75 @@ public class Utility {
         			}
         		}*/
         		//else if(colCount[i] != 0){
+        		
+        		//Columns
         			switch(gameBoard[i][j]){
-        				case 0: colCount[i] = 0;
-        						colZeroCount[i]++;
+        				case 0: colZeroCount[i]++;
         						break;
-        						
-        						
-        						
-        				case 1:
-        						if(1 <= colCount[i]){ //same value
+        				case 1:	//blue coin
+        						if(0 <= colCount[i]){ //same value
         							colCount[i]++;
         						}
         						else {
         							colCount[i] = 1;
         						}
+        						break;
+        				case 2:	//red coin
+        						if(colCount[i] <= 0){ //same value
+        							colCount[i]--;
+        						}
+        						else {
+        							colCount[i] = -1;
+        						}
+        						break;
+        			}
+        			
+        			//rows
+        			switch(gameBoard[i][j]){
+        				case 0: 
+        						//check
+        						if(0 < rowCount[j]) {
+        							if(rowCount[j] + rowZeroCount[j] == 4){
+        								rowCount[j] = 0;
+        								//increment utility
+        							} else {
+        								rowSndCount[j] = rowCount[j];
+        								rowCount[j] = 0;
+        							}
+        							
+        						} else if(rowCount[j] < 0) {
+        							if(rowCount[j] - rowZeroCount[j] == -4) {
+        								rowCount[j] = 0;
+        								//decrement utility
+        							} else {
+        								rowSndCount[j] = rowCount[j];
+        								rowCount[j] = 0;
+        							}
+        						}
+        						break;
+        				case 1:
+        						if(0 <= rowCount[j]) {
+        							rowCount[j]++;
+        							if(rowCount[j]+rowZeroCount[j] == 3){
+        								
+        							}
+        						}
+        						else if(rowCount[j] < 0) { //Switch in coin color
+        							if()
+        						}
+        						else if() {
+        							
+        						}
+        						
+        						
+        			}
+        						
+        						
+        						
+        						
+        						
+        						
+        						
         						
         						//tjek om det er legit
     							if(colCount[i] + colZeroCount[i] >= 4 || legitColumn(gameBoard, i,j,colCount[i],1,4-colCount[i]-colZeroCount[i])){
