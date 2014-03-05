@@ -46,43 +46,39 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     	int[] leftDiaCount = new int[diaLength];
     	int[] rightDiaCount = new int[diaLength];
     	int diaArrayPos;
+    	Winner winner;
+    	
         for(int i = 0; i < x; i++) {
         	for(int j = 0; j < y; j++) {
         		colCount[i] = updateCellCount(gameBoard[i][j], colCount[i]);
-        		if(colCount[i] == -4) {
-        			return Winner.PLAYER1;
+        		winner = winnerCheck(colCount[i]);
+        		if(winner != null) {
+        			return winner;
         		}
-        		if(colCount[i] == 4) {
-        			return Winner.PLAYER2;
-        		}
+        			
         		rowCount[j] = updateCellCount(gameBoard[i][j], rowCount[j]);
-        		if(rowCount[j] == -4) {
-        			return Winner.PLAYER1;
+        		winner = winnerCheck(rowCount[j]);
+        		if(winner != null) {
+        			return winner;
         		}
-        		if(rowCount[j] == 4) {
-        			return Winner.PLAYER2;
-        		}
+        		
         		diaArrayPos = leftAnchorPointer-j+i;
         		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
         			leftDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], leftDiaCount[diaArrayPos]);
-            		if(leftDiaCount[diaArrayPos] == -4) {
-            			return Winner.PLAYER1;
-            		}
-            		if(leftDiaCount[diaArrayPos] == 4) {
-            			return Winner.PLAYER2;
+            		winner = winnerCheck(leftDiaCount[diaArrayPos]);
+            		if(winner != null) {
+            			return winner;
             		}
         		}
+        		
         		diaArrayPos = rightAnchorPointer-((x-1)-i)+j;
         		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
         			rightDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], rightDiaCount[diaArrayPos]);
-            		if(rightDiaCount[diaArrayPos] == -4) {
-            			return Winner.PLAYER1;
-            		}
-            		if(rightDiaCount[diaArrayPos] == 4) {
-            			return Winner.PLAYER2;
+            		winner = winnerCheck(rightDiaCount[diaArrayPos]);
+            		if(winner != null) {
+            			return winner;
             		}
         		}
-
         	}
         }
         if(tieCheck()){
@@ -90,6 +86,17 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         }
         
         return Winner.NOT_FINISHED;
+    }
+    
+    private Winner winnerCheck(int count)
+    {
+		if(count == -4) {
+			return Winner.PLAYER1;
+		}
+		if(count == 4) {
+			return Winner.PLAYER2;
+		}
+		return null;
     }
     
     private boolean tieCheck(){
