@@ -1,14 +1,14 @@
 package connectFour;
 
-import java.io.Console;
 import java.util.List;
 
 public class XIcoetusFirstGameLogic implements IGameLogic {
-	private int x = 0;
-    private int y = 0;
+	private int columns = 0;
+    private int rows = 0;
     private int playerID;
     private int[][] gameBoard;
     private int[] nextCoinPos;
+    
     //The maximum amount of adjacent 4 connects in one diagonal. 
     private int diaLength;
     //Base pointers for diagonal arrays.
@@ -16,40 +16,48 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     private int rightAnchorPointer;
     
     //test pointer for easy bot
-    private int nextMove;
+    //private int nextMove;
     
     public XIcoetusFirstGameLogic() {
         //TODO Write your implementation for this method
     }
 
-    public void initializeGame(int x, int y, int playerID) {
-        this.x = x;
-        this.y = y;
+    public void initializeGame(int columns, int rows, int playerID) {
+        this.columns = columns;
+        this.rows = rows;
         this.playerID = playerID;
-        gameBoard = new int[x][y];
-        nextCoinPos = new int[x];
-        for (int i = 0; i < x; i++){
+        gameBoard = new int[columns][rows];
+        nextCoinPos = new int[columns];
+        /*for (int i = 0; i < x; i++){
         	nextCoinPos[i] = y-1;
-        }
+        }*/
         
-        diaLength = (x-3+y-3)-1;
-        leftAnchorPointer = y - 4;
-        rightAnchorPointer = x - 4;
+        diaLength = (columns-3+rows-3)-1;
+        leftAnchorPointer = rows - 4;
+        rightAnchorPointer = columns - 4;
         //test pointer for easy bot
-        nextMove = x-1;
+        //nextMove = columns-1;
         //TODO Write your implementation for this method
+        
+        
+        
+        
+        //TESTING
+        Utility util = new Utility(columns, rows);
+        int[][] gb = new int[][]{{1,1,0,1}, {1,0,0,0},{0,0,0,0},{0,0,0,0}};
+        util.utility(gb);
     }
 
     public Winner gameFinished() {
-    	int[] colCount = new int [x];
-    	int[] rowCount = new int[y];
+    	int[] colCount = new int [columns];
+    	int[] rowCount = new int[rows];
     	int[] leftDiaCount = new int[diaLength];
     	int[] rightDiaCount = new int[diaLength];
     	int diaArrayPos;
     	Winner winner;
-    	
-        for(int i = 0; i < x; i++) {
-        	for(int j = 0; j < y; j++) {
+
+        for(int i = 0; i < columns; i++) {
+        	for(int j = 0; j < rows; j++) {
         		colCount[i] = updateCellCount(gameBoard[i][j], colCount[i]);
         		winner = winnerCheck(colCount[i]);
         		if(winner != null) {
@@ -70,8 +78,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
             			return winner;
             		}
         		}
-        		
-        		diaArrayPos = rightAnchorPointer-((x-1)-i)+j;
+        		diaArrayPos = rightAnchorPointer-((columns-1)-i)+j;
         		if(diaArrayPos >= 0 && diaArrayPos < diaLength) {
         			rightDiaCount[diaArrayPos] = updateCellCount(gameBoard[i][j], rightDiaCount[diaArrayPos]);
             		winner = winnerCheck(rightDiaCount[diaArrayPos]);
@@ -101,10 +108,10 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     
     private boolean tieCheck(){
     	int filled = 0;
-    	for(int i = 0; i < x; i++){
-    		if(gameBoard[i][0] != 0) filled++;
+    	for(int i = 0; i < columns; i++){
+    		if(gameBoard[i][rows-1] != 0) filled++;
     	}
-    	return filled == x;
+    	return filled == columns;
     }
     
     private int updateCellCount(int current, int count) {
@@ -139,7 +146,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 
 	public void insertCoin(int column, int playerID) {
 		gameBoard[column][nextCoinPos[column]] = playerID;
-		nextCoinPos[column]--;
+		nextCoinPos[column]++;
 		printGameboard();
 	}
 
@@ -151,73 +158,77 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
 		System.out.println("Started");
 		Action bestAction = null;
 		// AI is blue who wants to maximize the utility
-		List<Action> actions = Action.getActions(x, y, playerID, gameBoard);
+		List<Action> actions = Action.getActions(columns, rows, playerID, gameBoard);
 		for (Action a : actions) {
 			gameBoard = a.apply(gameBoard);
-			if (playerID != 1) {
-				maxValue(a);
+			if (playerID == 1) {
+				minValue(a, 1);
+				if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
+					bestAction = a;
+				}
 			} else {
-				minValue(a);
-			}
-			if (bestAction == null || bestAction.getUtility() > a.getUtility()) {
-				bestAction = a;
+				maxValue(a, 1);
+				if (bestAction == null || a.getUtility() < bestAction.getUtility()) {
+					bestAction = a;
+				}
 			}
 			gameBoard = a.undo(gameBoard);
 		}
 		return bestAction.getColumn();
 	}
 
-	private void minValue(Action appliedAction) {
+	private void minValue(Action appliedAction, int depth) {
 		if (gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
 
-			List<Action> actions = Action.getActions(x, y, 2, gameBoard);
+			List<Action> actions = Action.getActions(columns, rows, 2, gameBoard);
 			for (Action a : actions) {
 				gameBoard = a.apply(gameBoard);
-				maxValue(a);
+				maxValue(a, depth+1);
 				if (bestAction == null
-						|| bestAction.getUtility() < a.getUtility()) {
+						|| a.getUtility() < bestAction.getUtility()) {
 					bestAction = a;
 				}
 				gameBoard = a.undo(gameBoard);
 			}
-
+			appliedAction.setUtility(bestAction.getUtility());
 		} else if (gameFinished() == Winner.PLAYER1) {
-			appliedAction.setUtility(1d);
+			appliedAction.setUtility(1d/depth);
 		} else if (gameFinished() == Winner.PLAYER2) {
-			appliedAction.setUtility(-1d);
+			appliedAction.setUtility(-1d/depth);
 		} else {
 			appliedAction.setUtility(0d);
 		}
+		
 	}
 
-	public void maxValue(Action appliedAction) {
+	public void maxValue(Action appliedAction, int depth) {
 		if (gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
 
-			List<Action> actions = Action.getActions(x, y, 1, gameBoard);
+			List<Action> actions = Action.getActions(columns, rows, 1, gameBoard);
 			for (Action a : actions) {
 				gameBoard = a.apply(gameBoard);
-				minValue(a);
+				minValue(a, depth+1);
 				if (bestAction == null
 						|| bestAction.getUtility() < a.getUtility()) {
 					bestAction = a;
 				}
 				gameBoard = a.undo(gameBoard);
 			}
-
+			appliedAction.setUtility(bestAction.getUtility());
 		} else if (gameFinished() == Winner.PLAYER1) {
-			appliedAction.setUtility(1d);
+			appliedAction.setUtility(1d/depth);
 		} else if (gameFinished() == Winner.PLAYER2) {
-			appliedAction.setUtility(-1d);
+			appliedAction.setUtility(-1d/depth);
 		} else {
 			appliedAction.setUtility(0d);
 		}
 	}
 
 	private void printGameboard() {
-		for (int i = y - 1; 0 <= i; i--) {
-			for (int j = 0; j < x; j++) {
+		for (int i = rows - 1; 0 <= i; i--) {
+			for (int j = 0; j < columns; j++) {
 				System.out.print(gameBoard[j][i] + " ");
 			}
 			System.out.println();

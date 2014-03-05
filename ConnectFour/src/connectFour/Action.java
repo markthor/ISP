@@ -24,7 +24,7 @@ public class Action {
 	public static List<Action> getActions(int columns, int rows, int playerID, int[][] gameBoard) {
 		List<Action> actions = new ArrayList<Action>();
 		for(int i = 0; i < columns; i++) {
-			for(int j = rows-1; 0 <= j; j--) {
+			for(int j = 0; j < rows; j++) {
 				if(gameBoard[i][j] == 0) {
 					actions.add(new Action(i, j, playerID));
 					break;
