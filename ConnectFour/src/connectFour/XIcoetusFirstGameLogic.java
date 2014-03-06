@@ -44,7 +44,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         
         //TESTING
         //Utility MAIN
-        Utility util = new Utility(columns, rows);
+        UtilityTwo util = new UtilityTwo(columns, rows);
         int[][] gb = new int[][]{{1,0,0,0}, {0,0,0,0},{1,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
         gameBoard = gb;
         printGameboard();
