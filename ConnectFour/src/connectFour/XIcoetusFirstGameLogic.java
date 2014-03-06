@@ -43,9 +43,12 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         
         
         //TESTING
+        //Utility MAIN
         Utility util = new Utility(columns, rows);
-        int[][] gb = new int[][]{{1,1,0,1}, {1,0,0,0},{0,0,0,0},{0,0,0,0}};
-        util.utility(gb);
+        int[][] gb = new int[][]{{1,0,0,0}, {0,0,0,0},{1,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+        gameBoard = gb;
+        printGameboard();
+        System.out.println("Utility " + util.utility(gb));
     }
 
     public Winner gameFinished() {
