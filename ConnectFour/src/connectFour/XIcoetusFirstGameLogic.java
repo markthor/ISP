@@ -39,13 +39,12 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         //nextMove = columns-1;
         //TODO Write your implementation for this method
         
-        
-        
-        
         //TESTING
-        Utility util = new Utility(columns, rows);
-        int[][] gb = new int[][]{{1,1,0,1}, {1,0,0,0},{0,0,0,0},{0,0,0,0}};
-        util.utility(gb);
+        this.columns = 5;
+        this.rows = 5;
+        Utility util = new Utility(this.columns, this.rows);
+        int[][] gb = new int[][]{{1,1,1,0,1}, {0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}};
+        System.out.println(util.getUtility(gb));
     }
 
     public Winner gameFinished() {
