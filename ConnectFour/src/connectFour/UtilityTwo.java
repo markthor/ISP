@@ -12,7 +12,7 @@ public class UtilityTwo {
 	private int[] colZeroCount, rowZeroCount, rowSndZeroCount, leftDiaZeroCount,
 			rightDiaZeroCount;
 	
-	private final double oneRow = 5, twoRow = 30, threeRow = 75, fourRow = 1000;
+	private final double oneRow = 1, twoRow = 10, threeRow = 100, fourRow = 1000;
 
 	public UtilityTwo(int columns, int rows) {
 		this.columns = columns;
@@ -39,72 +39,269 @@ public class UtilityTwo {
 		leftDiaZeroCount = new int[diaLength];
 		rightDiaZeroCount = new int[diaLength];
 
-		for (int i = 0; i < columns; i++) { // husk at tjekke at de sidste
-											// rækker giver mening at lægge i
+		for (int i = 0; i < columns; i++) { // husk at tjekke at de sidste rækker giver mening at lægge i
 			for (int j = 0; j < rows; j++) {
-
-				// Columns
-				/*
-				 * if(colCount[i] == 0 && colZeroCount[i] == 0){
-				 * switch(gameBoard[i][j]){ case 0: colZeroCount[i]++;
-				 * colCount[i] = 0; break; case 1: colCount[i] = 1; break; case
-				 * 2: colCount[i] = -1; break; } }
-				 */
-				// else if(colCount[i] != 0){
-
-				// Columns
+				// COLUMNS
 				switch (gameBoard[i][j]) {
 				case 0:
 					colZeroCount[i]++;
+					
+					if(colCount[i] > 0){//1's before
+						if(colCount[i] + rows-j >= 4){//there is space to get 4 in a row
+							utility += value(colCount[i], 1);
+						}
+					}
+					if(colCount[i] < 0){//2's before
+						if(-colCount[i] + rows-j >= 4){//there is space to get 4 in a row
+							utility += value(-colCount[i], 2);
+						}
+					}
+					colCount[i] = 0;
 					break;
 				case 1: // blue coin
 					if (0 <= colCount[i]) { // same value
 						colCount[i]++;
-					} else {
+						//TODO: We can check here if it is the last row instead of running through all at the end. Would that be more efficient?
+					} else { //2's before
+						if(-colCount[i] >= 4){//there is space to get 4 in a row
+							utility += value(-colCount[i], 2);
+						}
 						colCount[i] = 1;
 					}
 					break;
 				case 2: // red coin
 					if (colCount[i] <= 0) { // same value
 						colCount[i]--;
-					} else {
+						//TODO: We can check here if it is the last row instead of running through all at the end. Would that be more efficient?
+					} else {//1's before
+						if(colCount[i] >= 4){//there is space to get 4 in a row
+							utility += value(colCount[i], 1);
+						}
 						colCount[i] = -1;
 					}
 					break;
 				}
 
-				// rows
+				
+				
+				
+				
+				// ROWS
 				switch (gameBoard[i][j]) {
 				case 0: // TODO: NOT DONE
 					if (rowCount[j] == 0) { // consecutive zeroes
 						rowZeroCount[j]++;
-					} else if (0 < rowCount[j]) { // 1 values before
+					} 
+					else if (0 < rowCount[j]) { // 1 values before
 						if (rowCount[j] + rowZeroCount[j] + 1 >= 4) {
 							utility += value(rowCount[j], 1);
-							rowCount[j] = 0;
 						} else if (rowCount[j] < 3) { // 101 situation 010
 							int need = 4 - rowZeroCount[j] - rowCount[j] - 1;
 							int left = need;
-							int c = 0;
-							while (c < need && i + need < columns) {
-								if (gameBoard[i + left][j] == 1
-										|| gameBoard[i + left][j] == 0) {
+							
+							//Checks all possible locations
+							if(i-1-rowCount[j] > 0){//If there is space 1 to the left
+								if(gameBoard[i-1-rowCount[j]][j] == 0 || gameBoard[i-1-rowCount[j]][j] == 1){
 									left--;
-								} else {
-									break;
 								}
-								c++;
+								
+								
+								if(left > 0 && i-2-rowCount[j] > 0){//If there is space 2 to the left
+									if(gameBoard[i-2-rowCount[j]][j] == 0 || gameBoard[i-2-rowCount[j]][j] == 1){
+										left--;
+									}
+								}
 							}
+							
+							if(left > 0 && i+1 < columns){//If there is space 2 to the left
+								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 1){
+									left--;
+								}
+								
+								
+								if(left > 0 && i+2 < columns){//If there is space 2 to the left
+									if(gameBoard[i+2][j] == 0 || gameBoard[i+2][j] == 1){
+										left--;
+									}
+								}
+							}
+								
+							//}
 							if (left == 0) {
 								utility += value(rowCount[j], 1);
 							}
 						}
 					}
+					else if (rowCount[j] < 0) { // 2 values before
+						if (-rowCount[j] + rowZeroCount[j] + 1 >= 4) {
+							utility += value(-rowCount[j], 2);
+						} else if (-rowCount[j] < 3) { // 101 situation 010
+							int need = 4 - rowZeroCount[j] - -rowCount[j] - 1;
+							int left = need;
+							
+							//Checks all possible locations
+							if(i-1-(-rowCount[j]) > 0){//If there is space 1 to the left
+								if(gameBoard[i-1-(-rowCount[j])][j] == 0 || gameBoard[i-1-(-rowCount[j])][j] == 2){
+									left--;
+								}
+								
+								
+								if(left > 0 && i-2-(-rowCount[j]) > 0){//If there is space 2 to the left
+									if(gameBoard[i-2-(-rowCount[j])][j] == 0 || gameBoard[i-2-(-rowCount[j])][j] == 2){
+										left--;
+									}
+								}
+							}
+							
+							if(left > 0 && i+1 < columns){//If there is space 1 to the right
+								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 2){
+									left--;
+								}
+								
+								
+								if(left > 0 && i+2 < columns){//If there is space 2 to the right
+									if(gameBoard[i+2][j] == 0 || gameBoard[i+2][j] == 2){
+										left--;
+									}
+								}
+							}
+								
+							//}
+							if (left == 0) {
+								utility += value(-rowCount[j], 2);
+							}
+						}
+					}
 					rowCount[j] = 0;
+					rowZeroCount[j] = 1;
 					break;
 					
-				case 1: rowCount[j]++;
+				case 1: 
+					if(rowCount[j] >= 0){
+						rowCount[j]++;
+						//TODO: We can check here if it is the last column instead of running through all at the end. Would that be more efficient?
+					}
+					else if(rowCount[j] < 0){//2's before
+						if (-rowCount[j] + rowZeroCount[j] >= 4) {
+							utility += value(-rowCount[j], 2);
+						} else if (-rowCount[j] < 3) { // 101 situation 010
+							int need = 4 - rowZeroCount[j] - -rowCount[j] - 1;
+							int left = need;
+							
+							//Checks all possible locations
+							if(i-1-(-rowCount[j]) > 0){//If there is space 1 to the left
+								if(gameBoard[i-1-(-rowCount[j])][j] == 0 || gameBoard[i-1-(-rowCount[j])][j] == 2){
+									left--;
+								}
+								
+								
+								if(left > 0 && i-2-(-rowCount[j]) > 0){//If there is space 2 to the left
+									if(gameBoard[i-2-(-rowCount[j])][j] == 0 || gameBoard[i-2-(-rowCount[j])][j] == 2){
+										left--;
+									}
+								}
+							}
+							
+							if(left > 0 && i+1 < columns){//If there is space 1 to the right
+								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 2){
+									left--;
+								}
+								
+								
+								if(left > 0 && i+2 < columns){//If there is space 2 to the right
+									if(gameBoard[i+2][j] == 0 || gameBoard[i+2][j] == 2){
+										left--;
+									}
+								}
+							}
+								
+							//}
+							if (left == 0) {
+								utility += value(-rowCount[j], 2);
+							}
+						}
+						rowCount[j] = 1;
+						rowZeroCount[j] = 0;
+					}
+					break;
+				case 2:
+					if(rowCount[j] <= 0){//2's before
+						rowCount[j]--;
+						//TODO: We can check here if it is the last column instead of running through all at the end. Would that be more efficient?
+					}
+					else if(0 < rowCount[j]){//1's before
+						if (rowCount[j] + rowZeroCount[j] >= 4) {
+							utility += value(rowCount[j], 1);
+						} else if (rowCount[j] < 3) { // 101 situation 010
+							int need = 4 - rowZeroCount[j] - rowCount[j] - 1;
+							int left = need;
+							
+							//Checks all possible locations
+							if(i-1-rowCount[j] > 0){//If there is space 1 to the left
+								if(gameBoard[i-1-rowCount[j]][j] == 0 || gameBoard[i-1-rowCount[j]][j] == 1){
+									left--;
+								}
+								
+								
+								if(left > 0 && i-2-rowCount[j] > 0){//If there is space 2 to the left
+									if(gameBoard[i-2-rowCount[j]][j] == 0 || gameBoard[i-2-rowCount[j]][j] == 1){
+										left--;
+									}
+								}
+							}
+							
+							if(left > 0 && i+1 < columns){//If there is space 2 to the left
+								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 1){
+									left--;
+								}
+								
+								
+								if(left > 0 && i+2 < columns){//If there is space 2 to the left
+									if(gameBoard[i+2][j] == 0 || gameBoard[i+2][j] == 1){
+										left--;
+									}
+								}
+							}
+								
+							//}
+							if (left == 0) {
+								utility += value(rowCount[j], 1);
+							}
+						}
+						rowCount[j] = -1;
+						rowZeroCount[j] = 0;
+					}
+					break;
 				}
+				
+				
+				
+				//LeftDiagonal
+				/*diaArrayPos = leftAnchorPointer-j+i;
+				switch (gameBoard[i][j]) {
+				case 0:
+					if(diaArrayPos >= 0 && diaArrayPos < diaLength) { //valid diagonal
+						if(leftDiaCount[diaArrayPos] == 0){//zeroes before
+							leftDiaZeroCount[diaArrayPos]++;
+						}
+						else if(0 < leftDiaCount[diaArrayPos]){//1's before
+							if(leftDiaCount[diaArrayPos] + 1 + leftDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(leftDiaCount[diaArrayPos], 1);
+							}
+							else if()//check for space
+						}
+						else if(leftDiaCount[diaArrayPos] < 0){//2's before
+							if(leftDiaCount[diaArrayPos] + 1 + -leftDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(-leftDiaCount[diaArrayPos], 2);
+							}
+						}
+					
+					break;
+					}
+        		}*/
+				
+				
+				
 			}
 		}
 		return utility;

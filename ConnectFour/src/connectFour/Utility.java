@@ -133,7 +133,7 @@ public class Utility {
     }
     
     private int updateCellCount(int current, int count, int zeroCount) {
-    	if(count == freeConstant) {
+    	/*if(count == freeConstant) {
     		if(current == 1) {
     			return count - 1;
     		}
@@ -162,6 +162,7 @@ public class Utility {
     		}
     		
     	}
-    	return freeConstant;
+    	return freeConstant;*/
+    	return 0;
     }
 }
