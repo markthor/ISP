@@ -44,10 +44,10 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         
         //TESTING
         //Utility MAIN
-        UtilityTwo util = new UtilityTwo(4, 4);
-        int[][] gb = new int[][]{{0,0,0,0},{1,0,0,0},{1,0,0,0},{2,0,0,0}}; //TODO: BUG! As it counts the zeroes before twice, this one will think that the two 1's in a row are eligible
+        UtilityTwo util = new UtilityTwo(7, 7);
+        //int[][] gb = new int[][]{{0,0,0,0},{1,0,0,0},{1,0,0,0},{2,0,0,0}}; //TODO: BUG! As it counts the zeroes before twice, this one will think that the two 1's in a row are eligible
         //int[][] gb = new int[][]{{1,0,0,0,0,0}, {1,0,0,0,0,0},{1,0,0,0,0,0},{2,0,0,0,0,0},{2,0,0,0,0,0},{1,0,0,0,0,0}};
-        
+        int[][] gb = new int[][]{{0,1,1,1,1,0,0},{0,1,1,1,1,0,0},{0,1,1,1,1,0,0},{0,1,1,1,1,0,0},{0,0,0,0,0,0,0},{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}};
         
         //int[][] gb = new int[][]{{0,0,0,0,0,0}, {2,2,2,2,2,0},{2,2,2,2,1,0},{2,2,2,2,2,0},{1,1,1,1,1,0},{2,2,2,2,2,0}};
         gameBoard = gb;

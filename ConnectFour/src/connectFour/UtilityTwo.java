@@ -100,7 +100,7 @@ public class UtilityTwo {
 							int left = need;
 							
 							//Checks all possible locations
-							if(i-1-rowCount[j] > 0){//If there is space 1 to the left
+							/*if(i-1-rowCount[j] > 0){//If there is space 1 to the left
 								if(gameBoard[i-1-rowCount[j]][j] == 0 || gameBoard[i-1-rowCount[j]][j] == 1){
 									left--;
 								}
@@ -111,7 +111,7 @@ public class UtilityTwo {
 										left--;
 									}
 								}
-							}
+							}*/
 							
 							if(left > 0 && i+1 < columns){//If there is space 2 to the left
 								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 1){
@@ -140,7 +140,7 @@ public class UtilityTwo {
 							int left = need;
 							
 							//Checks all possible locations
-							if(i-1-(-rowCount[j]) > 0){//If there is space 1 to the left
+							/*if(i-1-(-rowCount[j]) > 0){//If there is space 1 to the left
 								if(gameBoard[i-1-(-rowCount[j])][j] == 0 || gameBoard[i-1-(-rowCount[j])][j] == 2){
 									left--;
 								}
@@ -151,7 +151,7 @@ public class UtilityTwo {
 										left--;
 									}
 								}
-							}
+							}*/
 							
 							if(left > 0 && i+1 < columns){//If there is space 1 to the right
 								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 2){
@@ -185,11 +185,11 @@ public class UtilityTwo {
 						if (-rowCount[j] + rowZeroCount[j] >= 4) {
 							utility += value(-rowCount[j], 2);
 						} else if (-rowCount[j] < 3) { // 101 situation 010
-							int need = 4 - rowZeroCount[j] - -rowCount[j] - 1;
+							int need = 4 - rowZeroCount[j] - -rowCount[j];
 							int left = need;
 							
 							//Checks all possible locations
-							if(i-1-(-rowCount[j]) > 0){//If there is space 1 to the left
+							/*if(i-1-(-rowCount[j]) > 0){//If there is space 1 to the left
 								if(gameBoard[i-1-(-rowCount[j])][j] == 0 || gameBoard[i-1-(-rowCount[j])][j] == 2){
 									left--;
 								}
@@ -200,7 +200,7 @@ public class UtilityTwo {
 										left--;
 									}
 								}
-							}
+							}*/
 							
 							if(left > 0 && i+1 < columns){//If there is space 1 to the right
 								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 2){
@@ -232,12 +232,12 @@ public class UtilityTwo {
 					else if(0 < rowCount[j]){//1's before
 						if (rowCount[j] + rowZeroCount[j] >= 4) {
 							utility += value(rowCount[j], 1);
-						} else if (rowCount[j] < 3) { // 101 situation 010
-							int need = 4 - rowZeroCount[j] - rowCount[j] - 1;
+						} else if (rowCount[j] < 3) { // 101 situation 010, Er det nu også det? Er det ikke bare altid sådan? Bliver der talt op for 4 på stribe med 11112?
+							int need = 4 - rowZeroCount[j] - rowCount[j];
 							int left = need;
 							
 							//Checks all possible locations
-							if(i-1-rowCount[j] > 0){//If there is space 1 to the left
+							/*if(i-1-rowCount[j] > 0){//If there is space 1 to the left
 								if(gameBoard[i-1-rowCount[j]][j] == 0 || gameBoard[i-1-rowCount[j]][j] == 1){
 									left--;
 								}
@@ -248,7 +248,7 @@ public class UtilityTwo {
 										left--;
 									}
 								}
-							}
+							}*/
 							
 							if(left > 0 && i+1 < columns){//If there is space 2 to the left
 								if(gameBoard[i+1][j] == 0 || gameBoard[i+1][j] == 1){
@@ -276,11 +276,11 @@ public class UtilityTwo {
 				
 				
 				
-				//LeftDiagonal
-				/*diaArrayPos = leftAnchorPointer-j+i;
+				//LEFTDIAGONAL
+				diaArrayPos = leftAnchorPointer-j+i;
 				switch (gameBoard[i][j]) {
 				case 0:
-					if(diaArrayPos >= 0 && diaArrayPos < diaLength) { //valid diagonal
+					if(diaArrayPos >= 0 && diaArrayPos < diaLength){ //valid diagonal
 						if(leftDiaCount[diaArrayPos] == 0){//zeroes before
 							leftDiaZeroCount[diaArrayPos]++;
 						}
@@ -288,20 +288,205 @@ public class UtilityTwo {
 							if(leftDiaCount[diaArrayPos] + 1 + leftDiaZeroCount[diaArrayPos] >= 4){//check if eligible
 								utility += value(leftDiaCount[diaArrayPos], 1);
 							}
-							else if()//check for space
+							else if(i+1 < columns && j+1 < rows){//check for space
+								int need = 4 - leftDiaZeroCount[j] - leftDiaCount[j] - 1;
+								int left = need;
+								if(gameBoard[i+1][j+1] == 0 || gameBoard[i+1][j+1] == 1){
+									left--;
+									if(left > 0 && i+2 < columns && j+2 < rows && gameBoard[i+2][j+2] == 0 || gameBoard[i+2][j+2] == 1){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(leftDiaCount[diaArrayPos], 1);
+								}
+							}	
 						}
 						else if(leftDiaCount[diaArrayPos] < 0){//2's before
-							if(leftDiaCount[diaArrayPos] + 1 + -leftDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+							if(-leftDiaCount[diaArrayPos] + 1 + leftDiaZeroCount[diaArrayPos] >= 4){//check if eligible
 								utility += value(-leftDiaCount[diaArrayPos], 2);
 							}
+							else if(i+1 < columns && j+1 < rows){//check for space
+								int need = 4 - leftDiaZeroCount[j] - -leftDiaCount[j] - 1;
+								int left = need;
+								if(gameBoard[i+1][j+1] == 0 || gameBoard[i+1][j+1] == 2){
+									left--;
+									if(left > 0 && i+2 < columns && j+2 < rows && gameBoard[i+2][j+2] == 0 || gameBoard[i+2][j+2] == 2){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(-leftDiaCount[diaArrayPos], 2);
+								}
+							}	
 						}
-					
+						leftDiaCount[diaArrayPos] = 0;
+						leftDiaZeroCount[diaArrayPos] = 1;
 					break;
 					}
-        		}*/
+				case 1:
+					if(diaArrayPos >= 0 && diaArrayPos < diaLength){ //valid diagonal
+						if(leftDiaCount[diaArrayPos] >= 0){//1's before
+							leftDiaCount[diaArrayPos]++;
+						}
+						else if(leftDiaCount[diaArrayPos] < 0){//2's before
+							if(-leftDiaCount[diaArrayPos] + leftDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(-leftDiaCount[diaArrayPos], 2);
+							}
+							else if(i+1 < columns && j+1 < rows){//check for space
+								int need = 4 - leftDiaZeroCount[j] - -leftDiaCount[j];
+								int left = need;
+								if(gameBoard[i+1][j+1] == 0 || gameBoard[i+1][j+1] == 2){
+									left--;
+									if(left > 0 && i+2 < columns && j+2 < rows && gameBoard[i+2][j+2] == 0 || gameBoard[i+2][j+2] == 2){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(-leftDiaCount[diaArrayPos], 2);
+								}
+							}
+							leftDiaCount[diaArrayPos] = 1;
+							leftDiaZeroCount[diaArrayPos] = 0;
+						}
+					}
+					break;
+				case 2:
+					if(diaArrayPos >= 0 && diaArrayPos < diaLength){ //valid diagonal
+						if(leftDiaCount[diaArrayPos] < 0){//2's before
+							leftDiaCount[diaArrayPos]--;
+						}
+						else if(0 < leftDiaCount[diaArrayPos]){//1's before
+							if(leftDiaCount[diaArrayPos] + 1 + leftDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(leftDiaCount[diaArrayPos], 1);
+							}
+							else if(i+1 < columns && j+1 < rows){//check for space
+								int need = 4 - leftDiaZeroCount[j] - leftDiaCount[j] - 1;
+								int left = need;
+								if(gameBoard[i+1][j+1] == 0 || gameBoard[i+1][j+1] == 1){
+									left--;
+									if(left > 0 && i+2 < columns && j+2 < rows && gameBoard[i+2][j+2] == 0 || gameBoard[i+2][j+2] == 1){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(leftDiaCount[diaArrayPos], 1);
+								}
+							}	
+							leftDiaCount[diaArrayPos] = -1;
+							leftDiaZeroCount[diaArrayPos] = 0;
+						}
+					}
+					break;
+        		}
 				
 				
 				
+				
+				
+				//RIGHTDIAGONAL
+				diaArrayPos = rightAnchorPointer-((columns-1)-i)+j;
+				switch (gameBoard[i][j]) {
+				case 0:
+	        		if(diaArrayPos >= 0 && diaArrayPos < diaLength) { //valid diagonal
+						if(rightDiaCount[diaArrayPos] == 0){//zeroes before
+							rightDiaZeroCount[diaArrayPos]++;
+						}
+						else if(0 < rightDiaCount[diaArrayPos]){//1's before
+							if(rightDiaCount[diaArrayPos] + 1 + rightDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(rightDiaCount[diaArrayPos], 1);
+							}
+							else if(i+1 < columns && j-1 > 0){//check for space
+								int need = 4 - rightDiaZeroCount[diaArrayPos] - rightDiaCount[diaArrayPos] - 1;
+								int left = need;
+								if(gameBoard[i+1][j-1] == 0 || gameBoard[i+1][j-1] == 1){
+									left--;
+									if(left > 0 && i+2 < columns && j-2 > 0 && gameBoard[i+2][j-2] == 0 || gameBoard[i+2][j-2] == 1){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(rightDiaCount[diaArrayPos], 1);
+								}
+							}	
+						}
+						else if(rightDiaCount[diaArrayPos] < 0){//2's before
+							if(-rightDiaCount[diaArrayPos] + 1 + rightDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(-rightDiaCount[diaArrayPos], 2);
+							}
+							else if(i+1 < columns && j-1 > 0){//check for space
+								int need = 4 - rightDiaZeroCount[j] - -rightDiaCount[j] - 1;
+								int left = need;
+								if(gameBoard[i+1][j-1] == 0 || gameBoard[i+1][j-1] == 2){
+									left--;
+									if(left > 0 && i+2 < columns && j-2 > 0 && gameBoard[i+2][j-2] == 0 || gameBoard[i+2][j-2] == 2){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(-rightDiaCount[diaArrayPos], 2);
+								}
+							}	
+						}
+						rightDiaCount[diaArrayPos] = 0;
+						rightDiaZeroCount[diaArrayPos] = 1;
+					break;
+					}
+				case 1:
+					if(diaArrayPos >= 0 && diaArrayPos < diaLength){ //valid diagonal
+						if(rightDiaCount[diaArrayPos] >= 0){//1's before
+							rightDiaCount[diaArrayPos]++;
+						}
+						else if(rightDiaCount[diaArrayPos] < 0){//2's before
+							if(-rightDiaCount[diaArrayPos] + rightDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(-rightDiaCount[diaArrayPos], 2);
+							}
+							else if(i+1 < columns && j-1 > 0){//check for space
+								int need = 4 - rightDiaZeroCount[j] - -rightDiaCount[j];
+								int left = need;
+								if(gameBoard[i+1][j-1] == 0 || gameBoard[i+1][j-1] == 2){
+									left--;
+									if(left > 0 && i+2 < columns && j-2 > 0 && gameBoard[i+2][j-2] == 0 || gameBoard[i+2][j-2] == 2){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(-rightDiaCount[diaArrayPos], 2);
+								}
+							}
+							rightDiaCount[diaArrayPos] = 1;
+							rightDiaZeroCount[diaArrayPos] = 0;
+						}
+					}
+					break;
+				case 2:
+					if(diaArrayPos >= 0 && diaArrayPos < diaLength){ //valid diagonal
+						if(rightDiaCount[diaArrayPos] < 0){//2's before
+							rightDiaCount[diaArrayPos]--;
+						}
+						else if(0 < rightDiaCount[diaArrayPos]){//1's before
+							if(rightDiaCount[diaArrayPos] + 1 + rightDiaZeroCount[diaArrayPos] >= 4){//check if eligible
+								utility += value(rightDiaCount[diaArrayPos], 1);
+							}
+							else if(i+1 < columns && j-1 > 0){//check for space
+								int need = 4 - rightDiaZeroCount[j] - rightDiaCount[j] - 1;
+								int left = need;
+								if(gameBoard[i+1][j-1] == 0 || gameBoard[i+1][j-1] == 1){
+									left--;
+									if(left > 0 && i+2 < columns && j-2 > 0 && gameBoard[i+2][j-2] == 0 || gameBoard[i+2][j-2] == 1){
+										left--;
+									}
+								}
+								else if(left == 0){
+									utility += value(rightDiaCount[diaArrayPos], 1);
+								}
+							}	
+							rightDiaCount[diaArrayPos] = -1;
+							rightDiaZeroCount[diaArrayPos] = 0;
+						}
+					}
+					break;
+        		}
 			}
 		}
 		return utility;
