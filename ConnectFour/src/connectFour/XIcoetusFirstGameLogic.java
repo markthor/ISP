@@ -21,7 +21,7 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
     public XIcoetusFirstGameLogic() {
         //TODO Write your implementation for this method
     }
-
+//TODO: Write final check in utility2, write depth check and write pruning
     public void initializeGame(int columns, int rows, int playerID) {
         this.columns = columns;
         this.rows = rows;
