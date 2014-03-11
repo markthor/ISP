@@ -215,7 +215,7 @@ public class UtilityTwo {
 				diaArrayPos = rightAnchorPointer-((columns-1)-i)+j;
 				switch (gameBoard[i][j]) {
 				case 0:
-					if(diaArrayPos >= 0 && diaArrayPos < diaLength) { //valid diagonal
+					if(diaArrayPos >= 0 && diaArrayPos < diaLength) { //valid diagonal, move before switch
 						if(rightDiaCount[diaArrayPos] == 0){//zeroes before
 							rightDiaZeroCount[diaArrayPos]++;
 						}
@@ -261,7 +261,7 @@ public class UtilityTwo {
 					break;
 				case 2:
 					if(diaArrayPos >= 0 && diaArrayPos < diaLength){ //valid diagonal
-						if(rightDiaCount[diaArrayPos] < 0){//2's before
+						if(rightDiaCount[diaArrayPos] <= 0){//2's before
 							rightDiaCount[diaArrayPos]--;
 						}
 						else if(0 < rightDiaCount[diaArrayPos]){//1's before
@@ -280,6 +280,46 @@ public class UtilityTwo {
 				}
 			}
 		}
+		
+		for(int i = 0; i < columns; i++){
+			if(colZeroCount[i] == 0){
+				if(4 <= colCount[i]){
+					utility += value(4,1);
+				}
+				else if(colCount[i] <= -4){
+					utility += value(4,2);
+				}
+			}
+		}
+		for(int i = 0; i < rows; i ++){
+			if(rowZeroCount[i] == 0){
+				if(4 <= rowCount[i]){
+					utility += value(4,1);
+				}
+				else if(rowCount[i] <= -4){
+					utility += value(4,2);
+				}
+			}
+		}
+		for(int i = 0; i < diaLength; i++){
+			if(leftDiaZeroCount[i] == 0){
+				if(4 <= leftDiaCount[i]){
+					utility += value(4,1);
+				}
+				else if(leftDiaCount[i] <= -4){
+					utility += value(4,2);
+				}
+			}
+			if(rightDiaZeroCount[i] == 0){
+				if(4 <= rightDiaCount[i]){
+					utility += value(4,1);
+				}
+				else if(rightDiaCount[i] <= -4){
+					utility += value(4,2);
+				}
+			}
+		}
+		
 		return utility;
 	}
 	
