@@ -42,6 +42,7 @@ public class UtilityTwo implements Utility {
 		for (int i = 0; i < columns; i++) { // husk at tjekke at de sidste rækker giver mening at lægge i
 			for (int j = 0; j < rows; j++) {
 				// COLUMNS
+				
 				switch (gameBoard[i][j]) {
 				case 0:
 					colZeroCount[i]++;
@@ -73,7 +74,7 @@ public class UtilityTwo implements Utility {
 					}
 					break;
 				}
-
+				
 				
 				
 				
@@ -190,7 +191,7 @@ public class UtilityTwo implements Utility {
 					break;
 				case 2:
 					if(diaArrayPos >= 0 && diaArrayPos < diaLength){ //valid diagonal
-						if(leftDiaCount[diaArrayPos] < 0){//2's before
+						if(leftDiaCount[diaArrayPos] <= 0){//2's before
 							leftDiaCount[diaArrayPos]--;
 						}
 						else if(0 < leftDiaCount[diaArrayPos]){//1's before
@@ -206,7 +207,6 @@ public class UtilityTwo implements Utility {
 					}
 					break;
         		}
-				
 				
 				
 				
@@ -377,10 +377,8 @@ public class UtilityTwo implements Utility {
 			int left = need;
 			if(gameBoard[column+1][row+1] == 0 || gameBoard[column+1][row+1] == 1){
 				left--;
-				if(left > 0 && column+2 < columns && row+2 < rows){
-					if(gameBoard[column+2][row+2] == 0 || gameBoard[column+2][row+2] == 1){
-						left--;
-					}
+				if(left > 0 && column+2 < columns && row+2 < rows && (gameBoard[column+2][row+2] == 0 || gameBoard[column+2][row+2] == 1)){
+					left--;
 				}
 			}
 			else if(left == 0){

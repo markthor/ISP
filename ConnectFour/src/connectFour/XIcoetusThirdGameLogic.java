@@ -33,6 +33,32 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
         //TODO Write your implementation for this method
         
         //TESTING
+        int[][] gb = new int[][]{{1,1,1,1,1,1}, {1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1}}; 
+        /*
+         *  Utility:  25000
+         *  Columns:  7000 
+         *  Rows:     6000
+         *  LeftDia:  6000
+         *  RightDia: 
+         */
+        System.out.println("1's utility: " + utility.utility(gb));
+        gb = new int[][]{{2,2,2,2,2,2}, {2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2}}; 
+        /*
+         *  Utility:  -19000
+         *  Columns:  -7000 
+         *  Rows:     -6000
+         *  LeftDia:  -6000
+         *  RightDia: 
+         */
+        System.out.println("2's utility: " + utility.utility(gb));
+        
+        //Utility MAIN
+        //UtilityTwo util = new UtilityTwo(columns, rows);
+        //int[][] gb = new int[][]{{1,0,0,0}, {0,0,0,0},{1,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+        //gameBoard = gb;
+        //printGameboard();
+        System.out.println();
+        
         /*
         this.columns = 6;
         this.rows = 6;
