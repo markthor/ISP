@@ -12,7 +12,7 @@ public class UtilityTwo implements Utility {
 	private int[] colZeroCount, rowZeroCount, rowSndZeroCount, leftDiaZeroCount,
 			rightDiaZeroCount;
 	
-	private final double oneRow = 1, twoRow = 10, threeRow = 100, fourRow = 1000;
+	private final double oneRow = 1, twoRow = 10, threeRow = 25, fourRow = 1000;
 
 	public UtilityTwo(int columns, int rows) {
 		this.columns = columns;
@@ -397,7 +397,7 @@ public class UtilityTwo implements Utility {
 			int left = need;
 			if(gameBoard[column+1][row-1] == 0 || gameBoard[column+1][row-1] == 1){
 				left--;
-				if(left > 0 && column+2 < columns && row-2 > 0 && gameBoard[column+2][row-2] == 0 || gameBoard[column+2][row-2] == 1){
+				if(left > 0 && column+2 < columns && row-2 > 0 && (gameBoard[column+2][row-2] == 0 || gameBoard[column+2][row-2] == 1)){
 					left--;
 				}
 			}

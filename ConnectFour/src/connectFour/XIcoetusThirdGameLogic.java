@@ -6,7 +6,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	private int columns = 0;
     private int rows = 0;
     private int playerID;
-    private final static int maxDepth = 5;
+    private final static int maxDepth = 7;
     private int[][] gameBoard;
     private int[] nextCoinPos;
     private Utility utility;
@@ -174,6 +174,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 			}
 			gameBoard = a.undo(gameBoard);
 		}
+		System.out.println("Utility: " + bestAction.getUtility());
 		return bestAction.getColumn();
 	}
 
