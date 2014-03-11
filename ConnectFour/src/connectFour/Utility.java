@@ -3,20 +3,23 @@ package connectFour;
 import connectFour.IGameLogic.Winner;
 
 public class Utility {
-	int columns, rows, diaLength, leftAnchorPointer, rightAnchorPointer;
+	private int columns, rows, diaLength, leftAnchorPointer, rightAnchorPointer;
+
+	// General arrays
+	private int[] colCount, rowCount, rowSndCount, leftDiaCount, rightDiaCount;
+
+	// Arrays used to count consecutive zeroes
+	private int[] colZeroCount, rowZeroCount, rowSndZeroCount, leftDiaZeroCount,
+			rightDiaZeroCount;
 	
-	//General arrays
-	int[] colCount, rowCount, rowSndCount, leftDiaCount, rightDiaCount;
-	
-	//Arrays used to count consecutive zeroes
-	int[] colZeroCount, rowZeroCount, rowSndZeroCount, leftDiaZeroCount, rightDiaZeroCount;
-	
-	public Utility(int columns, int rows){
+	private final double oneRow = 5, twoRow = 30, threeRow = 75, fourRow = 1000;
+
+	public Utility(int columns, int rows) {
 		this.columns = columns;
 		this.rows = rows;
-		diaLength = columns-3+rows-3-1;
-		leftAnchorPointer = rows-4;
-		rightAnchorPointer = columns -4;
+		diaLength = columns - 3 + rows - 3 - 1;
+		leftAnchorPointer = rows - 4;
+		rightAnchorPointer = columns - 4;
 	}
 	
     public double getUtility(int[][] gameBoard) {
@@ -123,7 +126,9 @@ public class Utility {
     		if(0 < count) {
     			//Finds a coin from same player
     			if(0 < recentZeroCount) {
-    				recentDisjointCount = count;
+    				if(recentZeroCount < 3) {
+    					recentDisjointCount = count;
+    				}
     				count = 1;
     			} else {
     				count = count + 1;
