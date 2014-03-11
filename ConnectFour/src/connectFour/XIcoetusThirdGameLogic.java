@@ -9,19 +9,13 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
     private final static int maxDepth = 5;
     private int[][] gameBoard;
     private int[] nextCoinPos;
+    private Utility utility;
     
     //The maximum amount of adjacent 4 connects in one diagonal. 
     private int diaLength;
     //Base pointers for diagonal arrays.
     private int leftAnchorPointer;
     private int rightAnchorPointer;
-    
-    //test pointer for easy bot
-    //private int nextMove;
-    
-    public XIcoetusThirdGameLogic() {
-        //TODO Write your implementation for this method
-    }
 
     public void initializeGame(int columns, int rows, int playerID) {
         this.columns = columns;
@@ -29,9 +23,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
         this.playerID = playerID;
         gameBoard = new int[columns][rows];
         nextCoinPos = new int[columns];
-        /*for (int i = 0; i < x; i++){
-        	nextCoinPos[i] = y-1;
-        }*/
+        utility = new UtilityTwo(columns, rows);
         
         diaLength = (columns-3+rows-3)-1;
         leftAnchorPointer = rows - 4;
@@ -41,13 +33,12 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
         //TODO Write your implementation for this method
         
         //TESTING
-        
+        /*
         this.columns = 6;
         this.rows = 6;
-        Utility util = new Utility(this.columns, this.rows);
         int[][] gb = new int[][]{{1,0,1,1,1,0}, {0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0}};
         System.out.println(getUtility(gb));
-        /*
+        
         //Utility MAIN
         UtilityTwo util = new UtilityTwo(columns, rows);
         int[][] gb = new int[][]{{1,0,0,0}, {0,0,0,0},{1,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
@@ -202,13 +193,13 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 			}
 			appliedAction.setUtility(bestAction.getUtility());
 		} else {
-			appliedAction.setUtility(getUtility(gameBoard));
+			appliedAction.setUtility(utility.utility(gameBoard));
 		}
 		
 	}
 
 	public void maxValue(Action appliedAction, int depth) {
-		if (gameFinished() == Winner.NOT_FINISHED) {
+		if (depth <= maxDepth && gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
 
 			List<Action> actions = Action.getActions(columns, rows, 1, gameBoard);
@@ -222,12 +213,8 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 				gameBoard = a.undo(gameBoard);
 			}
 			appliedAction.setUtility(bestAction.getUtility());
-		} else if (gameFinished() == Winner.PLAYER1) {
-			appliedAction.setUtility(1d/depth);
-		} else if (gameFinished() == Winner.PLAYER2) {
-			appliedAction.setUtility(-1d/depth);
 		} else {
-			appliedAction.setUtility(0d);
+			appliedAction.setUtility(utility.utility(gameBoard));
 		}
 	}
 

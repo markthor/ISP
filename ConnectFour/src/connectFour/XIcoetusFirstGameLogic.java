@@ -40,13 +40,13 @@ public class XIcoetusFirstGameLogic implements IGameLogic {
         //TODO Write your implementation for this method
         
         //TESTING
-        
+        /*
         this.columns = 5;
         this.rows = 5;
         Utility util = new Utility(this.columns, this.rows);
         int[][] gb = new int[][]{{1,1,1,0,1}, {0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}};
         System.out.println(util.getUtility(gb));
-        /*
+        
         //Utility MAIN
         UtilityTwo util = new UtilityTwo(7, 7);
         //int[][] gb = new int[][]{{0,0,0,0},{1,0,0,0},{1,0,0,0},{2,0,0,0}}; //TODO: BUG! As it counts the zeroes before twice, this one will think that the two 1's in a row are eligible
