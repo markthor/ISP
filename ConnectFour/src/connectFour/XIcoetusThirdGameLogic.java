@@ -6,21 +6,29 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	private int columns = 0;
 	private int rows = 0;
 	private int playerID;
+	// The cut-off depth which the minimax algorithm uses.
 	private final static int maxDepth = 9;
 	private int[][] gameBoard;
+	// The next vertical index that a coin can acquire according to the game rules.
 	private int[] nextCoinPos;
-	private Utility utility;
+	// The utility instance which contains the implementation of the utility heuristic function.
+	private IUtility utility;
 
 	// The maximum amount of adjacent 4 connects in one diagonal.
 	private int diaLength;
-	// Base pointers for diagonal arrays.
+	// Base pointers for diagonal arrays. The pointer points at the index that represents the diagonal that starts in the gameboard corner.
 	private int leftAnchorPointer;
 	private int rightAnchorPointer;
 
+	/*
+	 * (non-Javadoc)
+	 * @see connectFour.IGameLogic#initializeGame(int, int, int)
+	 */
 	public void initializeGame(int columns, int rows, int playerID) {
 		this.columns = columns;
 		this.rows = rows;
 		this.playerID = playerID;
+		
 		gameBoard = new int[columns][rows];
 		nextCoinPos = new int[columns];
 		utility = new UtilityTwo(columns, rows);
@@ -30,11 +38,18 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		rightAnchorPointer = columns - 4;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see connectFour.IGameLogic#gameFinished()
+	 */
 	public Winner gameFinished() {
+		// Each -Count array counts how many coins each player has connected, the sign indicates which player that has the coins connected.
 		int[] colCount = new int[columns];
 		int[] rowCount = new int[rows];
 		int[] leftDiaCount = new int[diaLength];
 		int[] rightDiaCount = new int[diaLength];
+		// Index for the array that represents the diagonal coin connections.
+		// The index is the array position that represents the diagonal which contains the current board position.
 		int diaArrayPos;
 		Winner winner;
 
@@ -77,6 +92,9 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		return Winner.NOT_FINISHED;
 	}
 
+	/*
+	 * Checks whether one of the players has won based on the count variables.
+	 */
 	private Winner winnerCheck(int count) {
 		if (count == -4) {
 			return Winner.PLAYER1;
@@ -87,6 +105,9 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		return null;
 	}
 
+	/*
+	 * Checks whether the game is tie by checing whether the gameboard is full.
+	 */
 	private boolean tieCheck() {
 		int filled = 0;
 		for (int i = 0; i < columns; i++) {
@@ -96,6 +117,9 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		return filled == columns;
 	}
 
+	/*
+	 * Updates the count that counts how many coins a player has connected by examining the next gameboard field.
+	 */
 	private int updateCellCount(int current, int count) {
 		if (count == 0) {
 			if (current == 1) {
@@ -126,6 +150,10 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		return 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see connectFour.IGameLogic#insertCoin(int, int)
+	 */
 	public void insertCoin(int column, int playerID) {
 		gameBoard[column][nextCoinPos[column]] = playerID;
 		nextCoinPos[column]++;
@@ -160,6 +188,9 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		return bestAction.getColumn();
 	}
 	
+	/*
+	 * Sets the utility of the applied action to the utility of the legal action which gives the maximum utility.
+	 */
 	public void maxValue(Action appliedAction, int depth, double alpha, double beta) {
 		if (depth <= maxDepth && gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
@@ -186,6 +217,9 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		}
 	}
 
+	/*
+	 * Sets the utility of the applied action to the utility of the legal action which gives the minimum utility.
+	 */
 	private void minValue(Action appliedAction, int depth, double alpha, double beta) {
 		if (depth <= maxDepth && gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
@@ -212,6 +246,9 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		}
 	}
 	
+	/*
+	 * Prints the entire gameboard in the console.
+	 */
 	private void printGameboard() {
 		for (int i = rows - 1; 0 <= i; i--) {
 			for (int j = 0; j < columns; j++) {

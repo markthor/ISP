@@ -2,7 +2,7 @@ package connectFour;
 
 import connectFour.IGameLogic.Winner;
 
-public class UtilityTwo implements Utility {
+public class UtilityTwo implements IUtility {
 	private int columns, rows, diaLength, leftAnchorPointer, rightAnchorPointer;
 
 	// General arrays
