@@ -6,7 +6,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	private int columns = 0;
 	private int rows = 0;
 	private int playerID;
-	private final static int maxDepth = 7;
+	private final static int maxDepth = 9;
 	private int[][] gameBoard;
 	private int[] nextCoinPos;
 	private Utility utility;
@@ -144,12 +144,12 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		for (Action a : actions) {
 			gameBoard = a.apply(gameBoard);
 			if (playerID == 1) {
-				minValue(a, 1);
+				minValue(a, 1, Double.MIN_VALUE, Double.MAX_VALUE);
 				if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
 					bestAction = a;
 				}
 			} else {
-				maxValue(a, 1);
+				maxValue(a, 1, Double.MIN_VALUE, Double.MAX_VALUE);
 				if (bestAction == null || a.getUtility() < bestAction.getUtility()) {
 					bestAction = a;
 				}
@@ -159,37 +159,24 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		System.out.println("Utility: " + bestAction.getUtility());
 		return bestAction.getColumn();
 	}
-
-	private void minValue(Action appliedAction, int depth) {
+	
+	public void maxValue(Action appliedAction, int depth, double alpha, double beta) {
 		if (depth <= maxDepth && gameFinished() == Winner.NOT_FINISHED) {
 			Action bestAction = null;
-
-			List<Action> actions = Action.getActions(columns, rows, 2, gameBoard);
-			for (Action a : actions) {
-				gameBoard = a.apply(gameBoard);
-				maxValue(a, depth + 1);
-				if (bestAction == null || a.getUtility() < bestAction.getUtility()) {
-					bestAction = a;
-				}
-				gameBoard = a.undo(gameBoard);
-			}
-			appliedAction.setUtility(bestAction.getUtility());
-		} else {
-			appliedAction.setUtility(utility.utility(gameBoard));
-		}
-
-	}
-
-	public void maxValue(Action appliedAction, int depth) {
-		if (depth <= maxDepth && gameFinished() == Winner.NOT_FINISHED) {
-			Action bestAction = null;
-
+			
 			List<Action> actions = Action.getActions(columns, rows, 1, gameBoard);
 			for (Action a : actions) {
 				gameBoard = a.apply(gameBoard);
-				minValue(a, depth + 1);
+				minValue(a, depth + 1, alpha, beta);
 				if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
 					bestAction = a;
+					if(bestAction.getUtility() >= beta){
+						gameBoard = a.undo(gameBoard);
+						break;
+					}
+					else{
+						alpha = Math.max(alpha, bestAction.getUtility());
+					}
 				}
 				gameBoard = a.undo(gameBoard);
 			}
@@ -199,6 +186,32 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		}
 	}
 
+	private void minValue(Action appliedAction, int depth, double alpha, double beta) {
+		if (depth <= maxDepth && gameFinished() == Winner.NOT_FINISHED) {
+			Action bestAction = null;
+			
+			List<Action> actions = Action.getActions(columns, rows, 2, gameBoard);
+			for (Action a : actions) {
+				gameBoard = a.apply(gameBoard);
+				maxValue(a, depth + 1, alpha, beta);
+				if (bestAction == null || a.getUtility() < bestAction.getUtility()) {
+					bestAction = a;
+					if(bestAction.getUtility() <= alpha){
+						gameBoard = a.undo(gameBoard);
+						break;
+					}
+					else{
+						beta = Math.min(beta, bestAction.getUtility());
+					}
+				}
+				gameBoard = a.undo(gameBoard);
+			}
+			appliedAction.setUtility(bestAction.getUtility());
+		} else {
+			appliedAction.setUtility(utility.utility(gameBoard));
+		}
+	}
+	
 	private void printGameboard() {
 		for (int i = rows - 1; 0 <= i; i--) {
 			for (int j = 0; j < columns; j++) {
