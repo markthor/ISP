@@ -9,7 +9,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	private final static int maxDepth = 9;
 	private int[][] gameBoard;
 	private int[] nextCoinPos;
-	private Utility utility;
+	private IUtility utility;
 
 	// The maximum amount of adjacent 4 connects in one diagonal.
 	private int diaLength;
@@ -23,7 +23,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		this.playerID = playerID;
 		gameBoard = new int[columns][rows];
 		nextCoinPos = new int[columns];
-		utility = new UtilityTwo(columns, rows);
+		utility = new Utility(columns, rows);
 
 		diaLength = (columns - 3 + rows - 3) - 1;
 		leftAnchorPointer = rows - 4;
