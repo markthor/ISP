@@ -1,7 +1,4 @@
 package connectFour;
-
-import connectFour.IGameLogic.Winner;
-
 /*
  * Utility heuristics must implement this interface.
  */

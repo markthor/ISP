@@ -31,7 +31,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		
 		gameBoard = new int[columns][rows];
 		nextCoinPos = new int[columns];
-		utility = new UtilityTwo(columns, rows);
+		utility = new Utility(columns, rows);
 
 		diaLength = (columns - 3 + rows - 3) - 1;
 		leftAnchorPointer = rows - 4;

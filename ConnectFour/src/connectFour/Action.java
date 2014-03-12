@@ -89,15 +89,4 @@ public class Action {
 	public String toString() {
 		return "Col: " + column + " - Row: " + row;
 	}
-	
-	
-	private void printGameboard(int[][] gameBoard) {
-		for (int i = 4 - 1; 0 <= i; i--) {
-			for (int j = 0; j < 4; j++) {
-				System.out.print(gameBoard[j][i] + " ");
-			}
-			System.out.println();
-		}
-		System.out.println();
-	}
 }
