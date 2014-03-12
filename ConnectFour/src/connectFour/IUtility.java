@@ -1,0 +1,10 @@
+package connectFour;
+
+import connectFour.IGameLogic.Winner;
+
+/*
+ * Utility heuristics must implement this interface.
+ */
+public interface IUtility {
+	public double utility(int[][] gameBoard);
+}
