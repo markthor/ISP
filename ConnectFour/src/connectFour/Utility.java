@@ -10,15 +10,26 @@ public class Utility implements IUtility {
 	// Constants used for assigning the utility value
 	private final double oneRow = 1, twoRow = 10, threeRow = 35, fourRow = 1000;
 
+	/**
+	 * @param columns Number of columns
+	 * @param rows Number of rows
+	 */
 	public Utility(int columns, int rows) {
 		this.columns = columns;
 		this.rows = rows;
+		// The length of the diagonal counting
 		diaLength = columns - 3 + rows - 3 - 1;
+		//TODO: what is this?
 		leftAnchorPointer = rows - 4;
 		rightAnchorPointer = columns - 4;
 	}
 
+	/**
+	 * Calculates the utility of the given gameboard
+	 * @param gameBoard The gameboard
+	 */
 	public double utility(int[][] gameBoard) {
+		//initialize the counting arrays
 		colCount = new int[columns];
 		rowCount = new int[rows];
 		leftDiaCount = new int[diaLength];
@@ -27,22 +38,26 @@ public class Utility implements IUtility {
 
 		double utility = 0;
 
-		// Zero stuff
+		// initialize the zero arrays
 		colZeroCount = new int[columns];
 		rowZeroCount = new int[rows];
 		leftDiaZeroCount = new int[diaLength];
 		rightDiaZeroCount = new int[diaLength];
 
-		for (int i = 0; i < columns; i++) { // husk at tjekke at de sidste rækker giver mening at lægge i
+		// Loops through the gameboard
+		for (int i = 0; i < columns; i++) {
 			for (int j = 0; j < rows; j++) {
+				// Local variables to minimize the amount of array lookups
 				int cC = colCount[i];
 				int rC = rowCount[j];
 				int rZC = rowZeroCount[j];
-
-				// COLUMNS
+				
+				// Switches on the value of the current field of the gameboard
 				switch (gameBoard[i][j]) {
+				// There is a 0 in the field
 				case 0:
 					// COLUMNS
+					// Increment the amount of zeroes
 					colZeroCount[i]++;
 
 					if (cC > 0) {// 1's before
@@ -137,20 +152,6 @@ public class Utility implements IUtility {
 					// LEFTDIAGONAL
 					
 					// RIGHTDIAGONAL
-					
-					break;
-				}
-
-				// ROWS
-				switch (gameBoard[i][j]) {
-				case 0: // TODO: NOT DONE
-					
-					break;
-
-				case 1:
-					
-					break;
-				case 2:
 					
 					break;
 				}

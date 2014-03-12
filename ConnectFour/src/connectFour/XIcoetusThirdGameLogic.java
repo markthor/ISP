@@ -6,7 +6,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	private int columns = 0;
 	private int rows = 0;
 	private int playerID;
-	private final static int maxDepth = 9;
+	private final static int maxDepth = 7;
 	private int[][] gameBoard;
 	private int[] nextCoinPos;
 	private IUtility utility;
@@ -144,12 +144,12 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		for (Action a : actions) {
 			gameBoard = a.apply(gameBoard);
 			if (playerID == 1) {
-				minValue(a, 1, Double.MIN_VALUE, Double.MAX_VALUE);
+				minValue(a, 1, -Double.MAX_VALUE, Double.MAX_VALUE);
 				if (bestAction == null || bestAction.getUtility() < a.getUtility()) {
 					bestAction = a;
 				}
 			} else {
-				maxValue(a, 1, Double.MIN_VALUE, Double.MAX_VALUE);
+				maxValue(a, 1, -Double.MAX_VALUE, Double.MAX_VALUE);
 				if (bestAction == null || a.getUtility() < bestAction.getUtility()) {
 					bestAction = a;
 				}
