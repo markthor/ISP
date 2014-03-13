@@ -7,7 +7,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	private int rows = 0;
 	private int playerID;
 	// The cut-off depth which the minimax algorithm uses.
-	private final static int maxDepth = 7;
+	private final static int maxDepth = 9;
 	private int[][] gameBoard;
 	// The next vertical index that a coin can acquire according to the game rules.
 	private int[] nextCoinPos;
@@ -36,41 +36,6 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		diaLength = (columns - 3 + rows - 3) - 1;
 		leftAnchorPointer = rows - 4;
 		rightAnchorPointer = columns - 4;
-		
-		//testing
-		/*int[][] gb = new int[][]{{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1},{1,1,1,1,1,1}};
-		System.out.println("Utility for 1's: " + utility.utility(gb));
-		gb = new int[][]{{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2},{2,2,2,2,2,2}};
-		System.out.println("Utility for 2's: " + utility.utility(gb));
-		*/
-		//int[][] gb = new int[][]{{2, 2, 1, 2, 2, 2}, {2, 1, 2, 1, 1, 0}, {1, 1, 1, 2, 0, 0}, {1, 2, 2, 1, 1, 0}, {2, 1, 1, 1, 2, 0}, {1, 0, 0, 0, 0, 0}, {2, 2, 2, 1, 0, 0}};
-		//gameBoard = gb;
-		
-		
-		/*
-		int[][] gb = new int[][]{{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{1, 1, 1, 1, 1, 1}};
-		System.out.println("Columns utility: " + utility.utility(gb));
-		gb = new int[][]{{1, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0},{1, 0, 0, 0, 0, 0},{1, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}};
-		System.out.println("Rows utility: " + utility.utility(gb));
-		gb = new int[][]{{1, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0},{0, 0, 1, 0, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}};
-		System.out.println("Left utility low: " + utility.utility(gb));
-		gb = new int[][]{{0, 0, 1, 0, 0, 0}, {0, 0, 0, 1, 0, 0},{0, 0, 0, 0, 1, 0},{0, 0, 0, 0, 0, 1},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}};
-		System.out.println("Left utility high: " + utility.utility(gb));
-		gb = new int[][]{{0, 0, 0, 1, 0, 0}, {0, 0, 1, 0, 0, 0},{0, 1, 0, 0, 0, 0},{1, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}};
-		System.out.println("right utility higher: " + utility.utility(gb));
-		gb = new int[][]{{0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 1, 0},{0, 0, 0, 1, 0, 0},{0, 0, 1, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}};
-		
-		System.out.println("Right: " + utility.utility(gb));
-		*/
-		
-		//int[][] gb = new int[][]{{1, 1, 1, 2, 2, 2},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}};
-		//System.out.println("Utility: " + utility.utility(gb));
-		
-		
-		
-		
-		
-		//gameBoard = gb;
 	}
 
 	/*

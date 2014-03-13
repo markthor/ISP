@@ -10,25 +10,29 @@ public class Utility implements IUtility {
 	private final double oneRow = 1, twoRow = 10, threeRow = 35, fourRow = 1000;
 
 	/**
-	 * @param columns Number of columns
-	 * @param rows Number of rows
+	 * @param columns
+	 *            Number of columns
+	 * @param rows
+	 *            Number of rows
 	 */
 	public Utility(int columns, int rows) {
 		this.columns = columns;
 		this.rows = rows;
 		// The length of the diagonal counting
 		diaLength = columns - 3 + rows - 3 - 1;
-		//TODO: what is this?
+		// Base pointers for diagonal arrays. The pointer points at the index that represents the diagonal that starts in the gameboard corner.
 		leftAnchorPointer = rows - 4;
 		rightAnchorPointer = columns - 4;
 	}
 
 	/**
 	 * Calculates the utility of the given gameboard
-	 * @param gameBoard The gameboard
+	 * 
+	 * @param gameBoard
+	 *            The gameboard
 	 */
 	public double utility(int[][] gameBoard) {
-		//initialize the counting arrays
+		// initialize the counting arrays
 		colCount = new int[columns];
 		rowCount = new int[rows];
 		leftDiaCount = new int[diaLength];
@@ -50,7 +54,7 @@ public class Utility implements IUtility {
 				int cC = colCount[i];
 				int rC = rowCount[j];
 				int rZC = rowZeroCount[j];
-				
+
 				// Switches on the value of the current field of the gameboard
 				switch (gameBoard[i][j]) {
 				// There is a 0 in the field
@@ -66,27 +70,25 @@ public class Utility implements IUtility {
 					}
 					// 2's before
 					if (colCount[i] < 0) {
-						//  Check if it is a valid column to give you utility
+						// Check if it is a valid column to give you utility
 						utility += columnCounter(-cC, j, 2);
 					}
 					colCount[i] = 0;
-					
-					
+
 					// ROWS
-					 // If there have been consecutive zeroes
+					// If there have been consecutive zeroes
 					if (rC == 0) {
 						// Increment the amount of consecutive zeroes in the current row
 						rowZeroCount[j]++;
 						break;
-					} 
+					}
 					// if there has been 1 values before the current zero
-					else if (0 < rC) { 
+					else if (0 < rC) {
 						// If there has been 4 or more 1's and 0's in a row
 						if (rC + rZC + 1 >= 4) {
 							// Add utility
 							utility += value(rC, 1);
-						} 
-						else {
+						} else {
 							// Check if it is a valid row to give you utility
 							utility += checkRow(rC, rZC, 1, i, j, gameBoard);
 						}
@@ -106,7 +108,7 @@ public class Utility implements IUtility {
 					rowCount[j] = 0;
 					// Set the amount of consecutive zeroes to 1
 					rowZeroCount[j] = 1;
-					
+
 					break;
 				// There is a 1 in the field
 				case 1: // blue coin
@@ -115,44 +117,38 @@ public class Utility implements IUtility {
 					if (0 <= cC) {
 						// Increment the amount of times that 1's has been observed
 						colCount[i]++;
-					} 
-					 // 2's before
+					}
+					// 2's before
 					else {
-						if(colCount[i] <= -4){
+						if (colCount[i] <= -4) {
 							// Check if it is a valid column to give you utility
 							utility += value(4, 2);
 						}
 						// Set that one 1 has been observed
 						colCount[i] = 1;
 					}
-					
-					
+
 					// ROWS
 					// If it has been 1's before
-					if (rC >= 0) 
-					{
+					if (rC >= 0) {
 						// increase the amount of times 1's as been observed
 						rowCount[j]++;
-					} 
+					}
 					// There has been 2's before
 					else if (rC < 0) {
 						// Check if there has been enough 2's and 0's for the row to give utility
 						if (-rC + rZC >= 4) {
 							// Add utility
 							utility += value(-rC, 2);
-						} 
-						else {
-							// Check if the row is valid for utility
-							utility += checkRow(-rC, rZC, 2, i, j, gameBoard);
 						}
 						// Set rowcount for the row to 1
 						rowCount[j] = 1;
 						// Set the amount of consecutive zeroes to 0
 						rowZeroCount[j] = 0;
 					}
-					
+
 					break;
-					
+
 				// There is a 2 in the field
 				case 2: // red coin
 					// COLUMNS
@@ -163,38 +159,33 @@ public class Utility implements IUtility {
 					}
 					// 1's before
 					else {
-						if(colCount[i] >= 4)
-						{
+						if (colCount[i] >= 4) {
 							// Check if it is a valid column to give you utility
 							utility += value(4, 1);
 						}
 						// Set that one 2 has been observed
 						colCount[i] = -1;
 					}
-					
-					
+
 					// ROWS
 					// If it has been 2's before
 					if (rC <= 0) {
 						// increase the amount of times 1's as been observed
 						rowCount[j]--;
-					} 
+					}
 					// There has been 1's before
 					else if (0 < rC) {
 						// Check if there has been enough 1's and 0's for the row to give utility
 						if (rC + rZC >= 4) {
 							// Add utility
 							utility += value(rC, 1);
-						} else {
-							// Check if the row is valid for utility
-							utility += checkRow(rC, rZC, 1, i, j, gameBoard);
 						}
 						// Set rowcount for the row to -1
 						rowCount[j] = -1;
 						// Set the amount of consecutive zeroes to 0
 						rowZeroCount[j] = 0;
 					}
-					
+
 					break;
 				}
 
@@ -225,7 +216,7 @@ public class Utility implements IUtility {
 								// Check if the diagonal is valid for utility
 								utility += checkLeftDiagonal(lDC, lZDC, 1, i, j, gameBoard);
 							}
-						} 
+						}
 						// There has been 2's before
 						else if (lDC < 0) {
 							// Check if there has been 4 or more 2's and 0's in a row
@@ -242,15 +233,15 @@ public class Utility implements IUtility {
 						// Set the amount of consecutive zeroes
 						leftDiaZeroCount[diaArrayPos] = 1;
 						break;
-					
+
 					// there is a 1 in the field
 					case 1:
 						// 1's before
 						if (lDC >= 0) {
-						 // Increment amount of 1's
+							// Increment amount of 1's
 							leftDiaCount[diaArrayPos]++;
 						}
-						//	2's before					
+						// 2's before
 						else if (lDC < 0) {
 							// Check if there has been 4 or more 2's and 0's in a row
 							if (-lDC + lZDC >= 4) {
@@ -266,14 +257,14 @@ public class Utility implements IUtility {
 							leftDiaZeroCount[diaArrayPos] = 0;
 						}
 						break;
-					
+
 					// There is a 2 in the field
 					case 2:
 						// 2's before
 						if (lDC <= 0) {
 							leftDiaCount[diaArrayPos]--;
 						}
-						//	1's before					
+						// 1's before
 						else if (0 < lDC) {
 							// Check if there has been 4 or more 1's and 0's in a row
 							if (lDC + 1 + lZDC >= 4) {
@@ -328,8 +319,6 @@ public class Utility implements IUtility {
 						} else if (rDC < 0) {// 2's before
 							if (-rDC + rZDC >= 4) {// check if eligible
 								utility += value(-rDC, 2);
-							} else {
-								utility += checkRightDiagonal(-rDC, rZDC, 2, i, j, gameBoard);
 							}
 							rightDiaCount[diaArrayPos] = 1;
 							rightDiaZeroCount[diaArrayPos] = 0;
@@ -339,10 +328,8 @@ public class Utility implements IUtility {
 						if (rDC <= 0) {// 2's before
 							rightDiaCount[diaArrayPos]--;
 						} else if (0 < rDC) {// 1's before
-							if (rDC + 1 + rZDC >= 4) {// check if eligible
+							if (rDC + rZDC >= 4) {// check if eligible
 								utility += value(rZDC, 1);
-							} else {
-								utility += checkRightDiagonal(rDC, rZDC, 1, i, j, gameBoard);
 							}
 							rightDiaCount[diaArrayPos] = -1;
 							rightDiaZeroCount[diaArrayPos] = 0;
@@ -353,111 +340,50 @@ public class Utility implements IUtility {
 			}
 		}
 
-		// Loops to make sure that all utility has been added
-		// Check columns
-		/*for (int i = 0; i < columns; i++) {
-			// Check if there has been either 4 or more 1's or 2's and then adds utility
+		for (int i = 0; i < columns; i++) {
 			if (4 <= colCount[i]) {
 				utility += value(4, 1);
 			} else if (colCount[i] <= -4) {
 				utility += value(4, 2);
-			}		
-		}
-		// Check rows
-		for (int i = 0; i < rows; i++) {
-			if (4 <= rowCount[i] + rowZeroCount[i]) {
-				utility += value(-rowCount[i], 1);
-			} else if (-rowCount[i] + rowZeroCount[i] >= -4) {
-				utility += value(-rowCount[i], 2);
 			}
 		}
-		//Check diagonals
-		for (int i = 0; i < diaLength; i++) {
-			if (4 <= leftDiaCount[i] + leftDiaZeroCount[i]) {
-				utility += value(leftDiaCount[i], 1);
-			} else if (-leftDiaCount[i] >= -4) {
-				utility += value(-leftDiaCount[i], 2);
-			}
-		
-			if (4 <= rightDiaCount[i] + rightDiaZeroCount[i]) {
-				utility += value(rightDiaCount[i], 1);
-			} else if (rightDiaCount[i] + rightDiaZeroCount[i] >= -4) {
-				utility += value(-rightDiaCount[i], 2);
-			}
-		}*/
-		
-		
-		for (int i = 0; i < columns; i++) {
-				if (4 <= colCount[i]) {
-					utility += value(4, 1);
-				} else if (colCount[i] <= -4) {
-					utility += value(4, 2);
-				}
-		}
-		/*
-		for (int i = 0; i < rows; i++) {
-			//if (rowZeroCount[i] == 0) {
-				if (4 <= rowCount[i]) {
-					utility += value(4, 1);
-				} else if (rowCount[i] <= -4) {
-					utility += value(4, 2);
-				}
-			//}
-		}
-		for (int i = 0; i < diaLength; i++) {
-			//if (leftDiaZeroCount[i] == 0) {
-				if (4 <= leftDiaCount[i]) {
-					utility += value(4, 1);
-				} else if (leftDiaCount[i] <= -4) {
-					utility += value(4, 2);
-				}
-			//}
-			//if (rightDiaZeroCount[i] == 0) {
-				if (4 <= rightDiaCount[i]) {
-					utility += value(4, 1);
-				} else if (rightDiaCount[i] <= -4) {
-					utility += value(4, 2);
-				}
-			//}
-		}*/
 
-		
 		for (int i = 0; i < rows; i++) {
-			if(rowCount[i] > 0){
-				if(rowCount[i] + rowZeroCount[i] >= 4){
+			if (rowCount[i] > 0) {
+				if (rowCount[i] + rowZeroCount[i] >= 4) {
 					utility += value(rowCount[i], 1);
 				}
-			}
-			else if(rowCount[i] < 0){
-				if(-rowCount[i] + rowZeroCount[i] >= 4){
+			} else if (rowCount[i] < 0) {
+				if (-rowCount[i] + rowZeroCount[i] >= 4) {
 					utility += value(-rowCount[i], 2);
 				}
 			}
 		}
-			
-			for (int i = 0; i < diaLength; i++) {
-				//if (leftDiaZeroCount[i] == 0) {
-					if (4 <= leftDiaCount[i]) {
-						utility += value(4, 1);
-					} else if (leftDiaCount[i] <= -4) {
-						utility += value(4, 2);
-					}
-				//}
-				//if (rightDiaZeroCount[i] == 0) {
-					if (4 <= rightDiaCount[i]) {
-						utility += value(4, 1);
-					} else if (rightDiaCount[i] <= -4) {
-						utility += value(4, 2);
-					}
+
+		for (int i = 0; i < diaLength; i++) {
+			if (4 <= leftDiaCount[i]) {
+				utility += value(4, 1);
+			} else if (leftDiaCount[i] <= -4) {
+				utility += value(4, 2);
+			}
+
+			if (4 <= rightDiaCount[i]) {
+				utility += value(4, 1);
+			} else if (rightDiaCount[i] <= -4) {
+				utility += value(4, 2);
+			}
 		}
-		
+
 		return utility;
 	}
 
 	/**
 	 * Returns the utility value of a given amount of consecutive values for a playerID
-	 * @param consecutive The amount of times a value has been observed consecutively
-	 * @param playerID The ID of the player which should get the utility
+	 * 
+	 * @param consecutive
+	 *            The amount of times a value has been observed consecutively
+	 * @param playerID
+	 *            The ID of the player which should get the utility
 	 * @return the utility value of the amount of consecutive values for the given player ID
 	 */
 	private double value(int consecutive, int playerID) {
@@ -492,8 +418,11 @@ public class Utility implements IUtility {
 	// colC = the positive colCount value.
 	/**
 	 * Checks if a column is valid for receiving utility
-	 * @param colC The positive value in the colCount array
-	 * @param row The row which 
+	 * 
+	 * @param colC
+	 *            The positive value in the colCount array
+	 * @param row
+	 *            The row which
 	 * @param playerID
 	 * @return the utility for the given column state
 	 */
@@ -501,19 +430,26 @@ public class Utility implements IUtility {
 		double util = 0d;
 		// Check if thre is space to get 4 in a row
 		if (colC + (rows - row) >= 4) {
-				util = value(colC, playerID);
-		}	
+			util = value(colC, playerID);
+		}
 		return util;
 	}
-	
+
 	/**
 	 * Check if a row is valid for utility
-	 * @param rowC The positive rowCount
-	 * @param rowZeroC The amount of consecutive zeroes
-	 * @param playerID The player ID
-	 * @param column the column from where the method is called
-	 * @param row the row from where the method is called
-	 * @param gameBoard The current gameboard
+	 * 
+	 * @param rowC
+	 *            The positive rowCount
+	 * @param rowZeroC
+	 *            The amount of consecutive zeroes
+	 * @param playerID
+	 *            The player ID
+	 * @param column
+	 *            the column from where the method is called
+	 * @param row
+	 *            the row from where the method is called
+	 * @param gameBoard
+	 *            The current gameboard
 	 * @return The utility for the given row state
 	 */
 	private double checkRow(int rowC, int rowZeroC, int playerID, int column, int row, int[][] gameBoard) {
@@ -526,7 +462,7 @@ public class Utility implements IUtility {
 		if (left > 0 && column + 1 < columns) {
 			if (gameBoard[column + 1][row] == 0 || gameBoard[column + 1][row] == playerID) {
 				left--;
-				
+
 				// If there is needed more pieces to get 4 in a row, check 2 spaces to the right
 				if (left > 0 && column + 2 < columns) {
 					if (gameBoard[column + 2][row] == 0 || gameBoard[column + 2][row] == playerID) {
@@ -543,12 +479,18 @@ public class Utility implements IUtility {
 
 	/**
 	 * 
-	 * @param leftDiaC The positive leftDiaCount
-	 * @param leftZeroDiaC The amount of consecutive zeroes
-	 * @param playerID The player ID
-	 * @param column the column from where the method is called
-	 * @param row the row from where the method is called
-	 * @param gameBoard The current gameboard
+	 * @param leftDiaC
+	 *            The positive leftDiaCount
+	 * @param leftZeroDiaC
+	 *            The amount of consecutive zeroes
+	 * @param playerID
+	 *            The player ID
+	 * @param column
+	 *            the column from where the method is called
+	 * @param row
+	 *            the row from where the method is called
+	 * @param gameBoard
+	 *            The current gameboard
 	 * @return The utility for the given left diagonal state
 	 */
 	private double checkLeftDiagonal(int leftDiaC, int leftZeroDiaC, int playerID, int column, int row, int[][] gameBoard) {
@@ -558,7 +500,7 @@ public class Utility implements IUtility {
 			int need = 4 - leftZeroDiaC - leftDiaC - 1;
 			// The amount of pieces needed to get 4 in a row, updated troughout the method
 			int left = need;
-			
+
 			// check what the next piece is
 			if (gameBoard[column + 1][row + 1] == 0 || gameBoard[column + 1][row + 1] == playerID) {
 				// Decrease left if it is a 0 or the players piece
@@ -578,36 +520,45 @@ public class Utility implements IUtility {
 
 	/**
 	 * 
-	 * @param rightDiaC The positive rightDiaCount
-	 * @param rightZeroDiaC The amount of consecutive zeroes
-	 * @param playerID The player ID
-	 * @param column the column from where the method is called
-	 * @param row the row from where the method is called
-	 * @param gameBoard The current gameboard
+	 * @param rightDiaC
+	 *            The positive rightDiaCount
+	 * @param rightZeroDiaC
+	 *            The amount of consecutive zeroes
+	 * @param playerID
+	 *            The player ID
+	 * @param column
+	 *            the column from where the method is called
+	 * @param row
+	 *            the row from where the method is called
+	 * @param gameBoard
+	 *            The current gameboard
 	 * @return The utility for the given right diagonal state
 	 */
 	private double checkRightDiagonal(int rightDiaC, int rightZeroDiaC, int playerID, int column, int row, int[][] gameBoard) {
 		// Same procedure as left diagonal
-		/*if (column + 1 < columns && row - 1 > 0) {
-			int need = 4 - rightZeroDiaC - rightDiaC - 1;
-			int left = need;
-			if (gameBoard[column + 1][row - 1] == 0 || gameBoard[column + 1][row - 1] == playerID) {
-				left--;
-				if (left > 0 && column + 2 < columns && row - 2 > 0 && (gameBoard[column + 2][row - 2] == 0 || gameBoard[column + 2][row - 2] == playerID)) {
-					left--;
-				}
-			} else if (left == 0) {
-				return value(rightDiaC, playerID);
-			}
-		}
-		return 0d;*/
-		
+		/*
+		 * if (column + 1 < columns && row - 1 > 0) {
+		 * int need = 4 - rightZeroDiaC - rightDiaC - 1;
+		 * int left = need;
+		 * if (gameBoard[column + 1][row - 1] == 0 || gameBoard[column + 1][row - 1] == playerID) {
+		 * left--;
+		 * if (left > 0 && column + 2 < columns && row - 2 > 0 && (gameBoard[column + 2][row - 2] == 0 || gameBoard[column + 2][row - 2] == playerID))
+		 * {
+		 * left--;
+		 * }
+		 * } else if (left == 0) {
+		 * return value(rightDiaC, playerID);
+		 * }
+		 * }
+		 * return 0d;
+		 */
+
 		if (column + 1 < columns && row - 1 >= 0) {
 			// The amount of pieces needed to get 4 in a row
 			int need = 4 - rightZeroDiaC - rightDiaC - 1;
 			// The amount of pieces needed to get 4 in a row, updated troughout the method
 			int left = need;
-			
+
 			// check what the next piece is
 			if (gameBoard[column + 1][row - 1] == 0 || gameBoard[column + 1][row - 1] == playerID) {
 				// Decrease left if it is a 0 or the players piece
