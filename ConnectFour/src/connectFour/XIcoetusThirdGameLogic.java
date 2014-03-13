@@ -36,6 +36,12 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 		diaLength = (columns - 3 + rows - 3) - 1;
 		leftAnchorPointer = rows - 4;
 		rightAnchorPointer = columns - 4;
+		
+		columns = 5;
+		rows = 5;
+		utility = new UtilityTwo(columns, rows);
+		gameBoard = new int[][] {{0,0,0,0,1},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}};
+		utility.utility(gameBoard);
 	}
 
 	/*
@@ -120,28 +126,28 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	/*
 	 * Updates the count that counts how many coins a player has connected by examining the next gameboard field.
 	 */
-	private int updateCellCount(int current, int count) {
+	private int updateCellCount(int cellValue, int count) {
 		if (count == 0) {
-			if (current == 1) {
+			if (cellValue == 1) {
 				return -1;
 			}
-			if (current == 2) {
+			if (cellValue == 2) {
 				return 1;
 			}
 		} else {
 			if (count < 0) {
-				if (current == 1) {
+				if (cellValue == 1) {
 					return count - 1;
 				}
-				if (current == 2) {
+				if (cellValue == 2) {
 					return 1;
 				}
 			}
 			if (count > 0) {
-				if (current == 1) {
+				if (cellValue == 1) {
 					return -1;
 				}
-				if (current == 2) {
+				if (cellValue == 2) {
 					return count + 1;
 				}
 			}
