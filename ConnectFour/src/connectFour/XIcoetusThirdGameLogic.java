@@ -7,7 +7,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	private int rows = 0;
 	private int playerID;
 	// The cut-off depth which the minimax algorithm uses.
-	private final static int maxDepth = 9;
+	private final static int maxDepth = 11;
 	private int[][] gameBoard;
 	// The next vertical index that a coin can acquire according to the game rules.
 	private int[] nextCoinPos;
