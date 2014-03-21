@@ -34,15 +34,8 @@ public class Action {
 		return actions;
 	}
 	
-	public int[][] apply(int[][] gameBoard){
-		//System.out.println("BEFORE " + toString());
-		//printGameboard(gameBoard);
-		
+	public int[][] apply(int[][] gameBoard){	
 		gameBoard[column][row] = playerID;
-		
-		//System.out.println("AFTER");
-		//printGameboard(gameBoard);
-		
 		return gameBoard;
 	}
 	
