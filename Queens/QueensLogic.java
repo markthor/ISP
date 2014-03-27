@@ -5,41 +5,115 @@
  * @author Stavros Amanatidis
  *
  */
-import java.util.*;
 
-import net.sf.javabdd.*;
+import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
+import net.sf.javabdd.JFactory;
 
 public class QueensLogic {
-    private int x = 0;
-    private int y = 0;
-    private int[][] board;
+	private int columns = 0;
+	private int rows = 0;
+	private int[][] board;
+	private final int numberOfNodes = 2000000;
+	private final int cacheSize = numberOfNodes / 10;
+	BDDFactory bddFactory;
 
+	public QueensLogic() {
+		// constructor
+	}
 
-    public QueensLogic() {
-       //constructor
-    }
+	public void initializeGame(int size) {
+		this.columns = size;
+		this.rows = size;
+		this.board = new int[columns][rows];
+		bddFactory = JFactory.init(numberOfNodes, cacheSize);
+        bddFactory.setVarNum(columns*rows);
+	}
 
-    public void initializeGame(int size) {
-        this.x = size;
-        this.y = size;
-        this.board = new int[x][y];
-    }
+	public int[][] getGameBoard() {
+		return board;
+	}
 
-   
-    public int[][] getGameBoard() {
-        return board;
-    }
+	public boolean insertQueen(int column, int row) {
 
-    public boolean insertQueen(int column, int row) {
+		if (board[column][row] == -1 || board[column][row] == 1) {
+			return true;
+		}
 
-        if (board[column][row] == -1 || board[column][row] == 1) {
-            return true;
+		board[column][row] = 1;
+
+		// put some logic here..
+		BDD completeBDD = createCompleteBDD();
+		for(int i = 0; i < columns; i++) {
+			for(int j = 0; j < rows; j++) {
+				//Restrict the BDD if there is a queen
+				if(board[i][j] == 1) {
+					completeBDD.restrict(bddFactory.ithVar(chessBoardIndexToVar(i, j)));
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	private int chessBoardIndexToVar(int i, int j) {
+		return i + j * rows;
+	}
+	
+    private BDD createCompleteBDD() {
+        BDD lastNode = bddFactory.zero();
+        BDD currentNode = null;
+        
+        for(int column = 0; column < columns; column++) {
+        	for(int row = 0; row < rows; row++) {
+                currentNode = bddFactory.one();
+		        //Check the row
+		        for(int i = 0; i < columns; i++) {
+		        	if(i != column) {
+		        		currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(i, row)));
+		        	}
+		        }
+		        
+		        //Check the column
+		        for(int i = 0; i < rows; i++) {
+		        	if(i != row) {
+		        		currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(column, i)));
+		        	}
+		        }
+		        
+		        //Check the NW to SE diagonal
+		        for(int i = (column - Math.min(column, row)), j = (row - Math.min(column, row)); i < columns && j < rows; i++, j++) {
+		        	if(i != column && j != row) {
+		        		currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(i, j)));
+		        	}
+		        }
+		        
+		        //Check the SW to NE diagonal
+		        int difference = column;
+		        if(((columns-1) / 2) < column || ((rows-1) / 2) < row) {
+		        	difference = (rows - 1) - row;
+		        }
+		        for(int i = -difference, j = difference; column+i < columns && 0 <= row+j; i++, j--) {
+		    		if(i != 0 && j != 0) {
+		    			currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(column+i, row+j)));
+		    		}
+		    	}
+                currentNode = bddFactory.ithVar(chessBoardIndexToVar(column, row)).imp(currentNode);
+                lastNode = lastNode.or(currentNode);
+        	}
         }
         
-        board[column][row] = 1;
+        BDD eightQueensPlacedLastNode = bddFactory.one();
+        for(int column = 0; column < columns; column++) {
+            BDD eightQueensPlaced = bddFactory.zero();
+        	for(int row = 0; row < rows; row++) {
+        		eightQueensPlaced = eightQueensPlaced.or(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
+        	}
+            eightQueensPlacedLastNode = eightQueensPlacedLastNode.and(eightQueensPlaced);
+        }
         
-        // put some logic here..
-      
-        return true;
+        currentNode = lastNode.and(eightQueensPlacedLastNode);
+        
+        return currentNode;
     }
 }

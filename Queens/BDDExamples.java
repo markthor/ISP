@@ -1,4 +1,3 @@
-
 import net.sf.javabdd.*;
 
 public class BDDExamples {
@@ -49,8 +48,5 @@ public class BDDExamples {
 		replacement.set(from,to);
 		
 		BDD b_replaced = existed.replace(replacement);
-		
-		
 	}
-
 }
