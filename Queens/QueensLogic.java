@@ -59,11 +59,25 @@ public class QueensLogic {
 					if(temporaryBDD.satCount() == 0) {
 						board[i][j] = -1;
 					}
-					temporaryBDD = eightQueenBDD;
 				}
 			}
 		}
 		
+		int lastAvailableSpot = 0;
+		int numberOfRestrictions = 0;
+		for(int j = 0; j < columns; j++) {
+			for(int i = 0; i < rows; i++) {
+				if(board[i][j] == -1) {
+					numberOfRestrictions = 1 + numberOfRestrictions;
+				} else {
+					lastAvailableSpot = i;
+				}
+			}
+			if(numberOfRestrictions == columns-1) {
+				insertQueen(lastAvailableSpot, j);
+			}
+			numberOfRestrictions = 0;
+		}
 		
 		System.out.println("There exists " + (int)eightQueenBDD.satCount() + " solution(s).");
 		
