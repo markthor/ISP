@@ -17,22 +17,30 @@ public class QueensLogic {
 	private final int numberOfNodes = 2000000;
 	private final int cacheSize = numberOfNodes / 10;
 	BDDFactory bddFactory;
+    BDD EightQueenBDD;
 
 	public QueensLogic() {
 		// constructor
 	}
 
-	public void initializeGame(int size) {
-		this.columns = size;
-		this.rows = size;
-		this.board = new int[columns][rows];
-		bddFactory = JFactory.init(numberOfNodes, cacheSize);
-        bddFactory.setVarNum(columns*rows);
-	}
-
 	public int[][] getGameBoard() {
 		return board;
 	}
+    
+	public void initializeGame(int size) {
+        this.columns = size;
+        this.rows = size;
+        this.board = new int[columns][rows];
+        
+        bddFactory = JFactory.init(numberOfNodes, cacheSize);
+        bddFactory.setVarNum(columns*rows);
+        
+        EightQueenBDD = createCompleteBDD();
+        
+        if(EightQueenBDD.satCount() > 0) {
+        	System.out.println("There exists a solution!" + EightQueenBDD.satCount());
+        }
+    }
 
 	public boolean insertQueen(int column, int row) {
 
@@ -56,12 +64,8 @@ public class QueensLogic {
 		return true;
 	}
 
-	private int chessBoardIndexToVar(int i, int j) {
-		return i + j * rows;
-	}
-	
     private BDD createCompleteBDD() {
-        BDD lastNode = bddFactory.zero();
+        BDD lastNode = bddFactory.one();
         BDD currentNode = null;
         
         for(int column = 0; column < columns; column++) {
@@ -70,21 +74,21 @@ public class QueensLogic {
 		        //Check the row
 		        for(int i = 0; i < columns; i++) {
 		        	if(i != column) {
-		        		currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(i, row)));
+		        		currentNode.andWith(bddFactory.nithVar(chessBoardIndexToVar(i, row)));
 		        	}
 		        }
 		        
 		        //Check the column
 		        for(int i = 0; i < rows; i++) {
 		        	if(i != row) {
-		        		currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(column, i)));
+		        		currentNode.andWith(bddFactory.nithVar(chessBoardIndexToVar(column, i)));
 		        	}
 		        }
 		        
 		        //Check the NW to SE diagonal
 		        for(int i = (column - Math.min(column, row)), j = (row - Math.min(column, row)); i < columns && j < rows; i++, j++) {
 		        	if(i != column && j != row) {
-		        		currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(i, j)));
+		        		currentNode.andWith(bddFactory.nithVar(chessBoardIndexToVar(i, j)));
 		        	}
 		        }
 		        
@@ -95,11 +99,11 @@ public class QueensLogic {
 		        }
 		        for(int i = -difference, j = difference; column+i < columns && 0 <= row+j; i++, j--) {
 		    		if(i != 0 && j != 0) {
-		    			currentNode.and(bddFactory.nithVar(chessBoardIndexToVar(column+i, row+j)));
+		    			currentNode.andWith(bddFactory.nithVar(chessBoardIndexToVar(column+i, row+j)));
 		    		}
 		    	}
                 currentNode = bddFactory.ithVar(chessBoardIndexToVar(column, row)).imp(currentNode);
-                lastNode = lastNode.or(currentNode);
+                lastNode = lastNode.and(currentNode);
         	}
         }
         
@@ -115,5 +119,9 @@ public class QueensLogic {
         currentNode = lastNode.and(eightQueensPlacedLastNode);
         
         return currentNode;
+    }
+    
+    private int chessBoardIndexToVar(int i, int j) {
+        return i + j*rows;
     }
 }
