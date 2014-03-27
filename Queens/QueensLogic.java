@@ -47,7 +47,7 @@ public class QueensLogic {
 		}
 
 		board[column][row] = 1;
-		// Restrict that nigga
+		//Restrict that nigga
 		eightQueenBDD.restrictWith(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
 		
 		BDD temporaryBDD;
