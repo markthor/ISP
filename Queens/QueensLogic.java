@@ -5,27 +5,36 @@
  * @author Stavros Amanatidis
  *
  */
-import java.util.*;
 
-import net.sf.javabdd.*;
+import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
+import net.sf.javabdd.JFactory;
 
 public class QueensLogic {
-    private int columns = 0;
-    private int rows = 0;
-    private int[][] board;
+	private int columns = 0;
+	private int rows = 0;
+	private int[][] board;
+	private final int numberOfNodes = 2000000;
+	private final int cacheSize = numberOfNodes / 10;
+	BDDFactory bddFactory;
     BDD EightQueenBDD;
-    private final int numberOfNodes = 2000000;
-    private final int cacheSize = numberOfNodes/10;
 
+	public QueensLogic() {
+		// constructor
+	}
 
-    public QueensLogic() {
-       //constructor
-    }
-
-    public void initializeGame(int size) {
+	public int[][] getGameBoard() {
+		return board;
+	}
+    
+	public void initializeGame(int size) {
         this.columns = size;
         this.rows = size;
         this.board = new int[columns][rows];
+        
+        bddFactory = JFactory.init(numberOfNodes, cacheSize);
+        bddFactory.setVarNum(columns*rows);
+        
         EightQueenBDD = createCompleteBDD();
         
         if(EightQueenBDD.satCount() > 0) {
@@ -33,24 +42,28 @@ public class QueensLogic {
         }
     }
 
-   
-    public int[][] getGameBoard() {
-        return board;
-    }
+	public boolean insertQueen(int column, int row) {
 
-    public boolean insertQueen(int column, int row) {
+		if (board[column][row] == -1 || board[column][row] == 1) {
+			return true;
+		}
 
-        if (board[column][row] == -1 || board[column][row] == 1) {
-            return true;
-        }
-        
-        board[column][row] = 1;
-        
-        // put some logic here..
-        
-        return true;
-    }
-    
+		board[column][row] = 1;
+
+		// put some logic here..
+		BDD completeBDD = createCompleteBDD();
+		for(int i = 0; i < columns; i++) {
+			for(int j = 0; j < rows; j++) {
+				//Restrict the BDD if there is a queen
+				if(board[i][j] == 1) {
+					completeBDD.restrict(bddFactory.ithVar(chessBoardIndexToVar(i, j)));
+				}
+			}
+		}
+		
+		return true;
+	}
+
     private BDD createCompleteBDD() {
     	BDDFactory bddFactory = JFactory.init(numberOfNodes, cacheSize);
         bddFactory.setVarNum(columns*rows);
@@ -110,10 +123,7 @@ public class QueensLogic {
         
         return currentNode;
     }
-
     private int chessBoardIndexToVar(int i, int j) {
         return i + j*rows;
     }
-    
-    
 }
