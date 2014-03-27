@@ -102,17 +102,14 @@ public class QueensLogic {
 		        }
 		        
 		        //Check the SW to NE diagonal
-		        int difference = column;
-		        if(((columns-1) / 2) < column || ((rows-1) / 2) < row) {
-		        	difference = (rows - 1) - row;
+		        for(int i = -1, j = 1; 0 <= column+i && row+j < rows; i--, j++) {
+		        	currentNode.andWith(bddFactory.nithVar(chessBoardIndexToVar(column+i, row+j)));
 		        }
-		        for(int i = -difference, j = difference; column+i < columns && 0 <= row+j; i++, j--) {
-		    		if(i != 0 && j != 0) {
-		    			currentNode.andWith(bddFactory.nithVar(chessBoardIndexToVar(column+i, row+j)));
-		    		}
-		    	}
+		        for(int i = 1, j = -1; column+i < columns && 0 <= row+j; i++, j--) {
+		        	currentNode.andWith(bddFactory.nithVar(chessBoardIndexToVar(column+i, row+j)));
+		        }
                 currentNode = bddFactory.ithVar(chessBoardIndexToVar(column, row)).imp(currentNode);
-                lastNode = lastNode.and(currentNode);
+                lastNode.andWith(currentNode);
         	}
         }
         
@@ -120,14 +117,14 @@ public class QueensLogic {
         for(int column = 0; column < columns; column++) {
             BDD eightQueensPlaced = bddFactory.zero();
         	for(int row = 0; row < rows; row++) {
-        		eightQueensPlaced = eightQueensPlaced.or(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
+        		eightQueensPlaced.orWith(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
         	}
-            eightQueensPlacedLastNode = eightQueensPlacedLastNode.and(eightQueensPlaced);
+            eightQueensPlacedLastNode.andWith(eightQueensPlaced);
         }
         
-        currentNode = lastNode.and(eightQueensPlacedLastNode);
+        lastNode.andWith(eightQueensPlacedLastNode);
         
-        return currentNode;
+        return lastNode;
     }
     private int chessBoardIndexToVar(int i, int j) {
         return i + j*rows;
