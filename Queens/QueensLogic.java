@@ -55,7 +55,7 @@ public class QueensLogic {
     	BDDFactory bddFactory = JFactory.init(numberOfNodes, cacheSize);
         bddFactory.setVarNum(columns*rows);
         
-        BDD lastNode = bddFactory.zero();
+        BDD lastNode = bddFactory.one();
         BDD currentNode = null;
         
         for(int column = 0; column < columns; column++) {
@@ -93,7 +93,7 @@ public class QueensLogic {
 		    		}
 		    	}
                 currentNode = bddFactory.ithVar(chessBoardIndexToVar(column, row)).imp(currentNode);
-                lastNode = lastNode.or(currentNode);
+                lastNode = lastNode.and(currentNode);
         	}
         }
         
@@ -110,49 +110,7 @@ public class QueensLogic {
         
         return currentNode;
     }
-    /*
-    private BDD createBDD() {
-    	BDDFactory fact = JFactory.init(1000,1000);
-    	fact.setVarNum(x*y);
-    	int a = 0;
-    	int b = 0;
-    	int diaStartLeftA, diaStartLeftB, diaStartRightA, diaStartRightB;
-    	BDD result = fact.ithVar(chessBoardIndexToVar(a, b));
-    	if(a <= b) {
-    		diaStartLeftA = 0;
-    		diaStartLeftB = b - a;
-    	} else {
-    		diaStartLeftA = a - b;
-    		diaStartLeftB = 0;
-    	}
-    	
-    	
-    	
-    	//Traversing horizontal direction.
-    	int diaI = diaStartLeftA;
-    	int diaJ = diaStartLeftB;
-    	System.out.println("diaI =" + diaI + "  diaJ =" + diaJ);
-    	for(int i = 0; i < x; i++) {
-    		if(i != a) {
-    			result = result.and(fact.nithVar(chessBoardIndexToVar(i, b)));
-    			board[i][b] = -1;
-    		}
-    		if(i != b) {
-    			result = result.and(fact.nithVar(chessBoardIndexToVar(a, i)));
-    			board[a][i] = -1;
-    		}
-    		if(x >= diaI && x >= diaJ && diaI != a && diaJ != b) {
-    			result = result.and(fact.nithVar(chessBoardIndexToVar(diaI, diaJ)));
-    			board[diaI][diaJ] = -1;
-    			System.out.println("diaI =" + diaI + "  diaJ =" + diaJ);
-    			diaI = diaI+1;
-    			diaJ = diaJ+1;
-    		}
-    		
-    	}
-    	return result;
-    }
-    */
+
     private int chessBoardIndexToVar(int i, int j) {
         return i + j*rows;
     }
