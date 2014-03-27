@@ -17,7 +17,7 @@ public class QueensLogic {
 	private final int numberOfNodes = 2000000;
 	private final int cacheSize = numberOfNodes / 10;
 	BDDFactory bddFactory;
-    BDD EightQueenBDD;
+    BDD eightQueenBDD;
 
 	public QueensLogic() {
 		// constructor
@@ -35,9 +35,9 @@ public class QueensLogic {
         bddFactory = JFactory.init(numberOfNodes, cacheSize);
         bddFactory.setVarNum(columns*rows);
         
-        EightQueenBDD = createCompleteBDD();
+        eightQueenBDD = createCompleteBDD();
         
-        System.out.println("There exists " + (int)EightQueenBDD.satCount() + " solution(s).");
+        System.out.println("There exists " + (int)eightQueenBDD.satCount() + " solution(s).");
     }
 
 	public boolean insertQueen(int column, int row) {
@@ -47,17 +47,21 @@ public class QueensLogic {
 		}
 
 		board[column][row] = 1;
-
-		// put some logic here..
-		BDD completeBDD = createCompleteBDD();
+		// Restrict that nigga
+		eightQueenBDD.restrictWith(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
+		
+		BDD tempBDD;
 		for(int i = 0; i < columns; i++) {
 			for(int j = 0; j < rows; j++) {
-				//Restrict the BDD if there is a queen
-				if(board[i][j] == 1) {
-					completeBDD.restrict(bddFactory.ithVar(chessBoardIndexToVar(i, j)));
+				tempBDD = eightQueenBDD.restrict(bddFactory.ithVar(chessBoardIndexToVar(i, j)));
+				if(!(tempBDD.satCount() > 0)) {
+					board[column][row] = -1;
 				}
 			}
 		}
+		
+		
+		System.out.println("There exists " + (int)eightQueenBDD.satCount() + " solution(s).");
 		
 		return true;
 	}
