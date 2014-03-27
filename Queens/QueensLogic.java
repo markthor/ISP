@@ -17,7 +17,7 @@ public class QueensLogic {
 	private final int numberOfNodes = 2000000;
 	private final int cacheSize = numberOfNodes / 10;
 	BDDFactory bddFactory;
-    BDD eightQueenBDD;
+    private BDD eightQueenBDD;
 
 	public QueensLogic() {
 		// constructor
@@ -50,12 +50,16 @@ public class QueensLogic {
 		// Restrict that nigga
 		eightQueenBDD.restrictWith(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
 		
-		BDD tempBDD;
+		BDD temporaryBDD;
 		for(int i = 0; i < columns; i++) {
 			for(int j = 0; j < rows; j++) {
-				tempBDD = eightQueenBDD.restrict(bddFactory.ithVar(chessBoardIndexToVar(i, j)));
-				if(!(tempBDD.satCount() > 0)) {
-					board[column][row] = -1;
+				//Restrict the BDD if there is a queen
+				if(board[i][j] == 0) {
+					temporaryBDD = eightQueenBDD.restrict(bddFactory.ithVar(chessBoardIndexToVar(i, j)));
+					if(temporaryBDD.satCount() == 0) {
+						board[i][j] = -1;
+					}
+					temporaryBDD = eightQueenBDD;
 				}
 			}
 		}
