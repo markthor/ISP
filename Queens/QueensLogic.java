@@ -37,9 +37,7 @@ public class QueensLogic {
         
         EightQueenBDD = createCompleteBDD();
         
-        if(EightQueenBDD.satCount() > 0) {
-        	System.out.println("There exists a solution!" + EightQueenBDD.satCount());
-        }
+        System.out.println("There exists " + (int)EightQueenBDD.satCount() + " solution(s).");
     }
 
 	public boolean insertQueen(int column, int row) {
