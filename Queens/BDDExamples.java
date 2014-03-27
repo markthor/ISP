@@ -9,13 +9,13 @@ public class BDDExamples {
 	public static void main(String[] args){
 		BDDFactory fact = JFactory.init(10,10);
 		fact.setVarNum(2);
-		
+
 		BDD True = fact.one();
 		BDD False = fact.zero();
 		
 		// the expression x0
 		BDD x_0 = fact.ithVar(0);
-		
+
 		//the expression not x1
 		BDD nx_1 = fact.nithVar(1);
 		
