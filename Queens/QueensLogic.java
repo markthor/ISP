@@ -63,6 +63,7 @@ public class QueensLogic {
 			}
 		}
 		
+		//Place a queen automatically if there is only one tile left in the row
 		int lastAvailableSpot = 0;
 		int numberOfRestrictions = 0;
 		for(int j = 0; j < columns; j++) {
