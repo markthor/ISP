@@ -47,7 +47,6 @@ public class QueensLogic {
 		}
 
 		board[column][row] = 1;
-		//Restrict that nigga
 		eightQueenBDD.restrictWith(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
 		
 		BDD temporaryBDD;
@@ -79,11 +78,13 @@ public class QueensLogic {
 			numberOfRestrictions = 0;
 		}
 		
-		System.out.println("There exists " + (int)eightQueenBDD.satCount() + " solution(s).");
-		
 		return true;
 	}
-
+	
+	/**
+	 * Creates the BDD of the predicate that represents the solution to the N-queen problem.
+	 * @return A BDD of the predicate that represents the solution to the N-queen problem.
+	 */
     private BDD createCompleteBDD() {
     	BDDFactory bddFactory = JFactory.init(numberOfNodes, cacheSize);
         bddFactory.setVarNum(columns*rows);
@@ -91,6 +92,7 @@ public class QueensLogic {
         BDD lastNode = bddFactory.one();
         BDD currentNode = null;
         
+        //For each tile on the NxN board.
         for(int column = 0; column < columns; column++) {
         	for(int row = 0; row < rows; row++) {
                 currentNode = bddFactory.one();
@@ -126,7 +128,7 @@ public class QueensLogic {
                 lastNode.andWith(currentNode);
         	}
         }
-        
+        // The expression that checks that all N queens has been placed.
         BDD eightQueensPlacedLastNode = bddFactory.one();
         for(int column = 0; column < columns; column++) {
             BDD eightQueensPlaced = bddFactory.zero();
@@ -140,6 +142,13 @@ public class QueensLogic {
         
         return lastNode;
     }
+    
+    /**
+     * Converts a tile coordinate pair to the BDD boolean variable that represents the tile.
+     * @param i The row coordinate.
+     * @param j The column coordinate.
+     * @return The BDD variable number.
+     */
     private int chessBoardIndexToVar(int i, int j) {
         return i + j*rows;
     }
