@@ -53,7 +53,7 @@ public class QueensLogic {
 		BDD temporaryBDD;
 		for(int i = 0; i < columns; i++) {
 			for(int j = 0; j < rows; j++) {
-				//Restrict the BDD if there is a queen
+				//Restrict the BDD if there is not a queen
 				if(board[i][j] == 0) {
 					temporaryBDD = eightQueenBDD.restrict(bddFactory.ithVar(chessBoardIndexToVar(i, j)));
 					if(temporaryBDD.satCount() == 0) {
