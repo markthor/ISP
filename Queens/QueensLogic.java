@@ -47,6 +47,7 @@ public class QueensLogic {
 		}
 
 		board[column][row] = 1;
+		//Restrict the BDD with the new queen placed
 		eightQueenBDD.restrictWith(bddFactory.ithVar(chessBoardIndexToVar(column, row)));
 		
 		BDD temporaryBDD;
