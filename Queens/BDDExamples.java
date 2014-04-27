@@ -47,6 +47,7 @@ public class BDDExamples {
 		int[] to = {0};
 		replacement.set(from,to);
 		
+		@SuppressWarnings("unused")
 		BDD b_replaced = existed.replace(replacement);
 	}
 }
