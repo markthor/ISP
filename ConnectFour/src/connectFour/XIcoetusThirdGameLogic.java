@@ -248,6 +248,7 @@ public class XIcoetusThirdGameLogic implements IGameLogic {
 	/*
 	 * Prints the entire gameboard in the console.
 	 */
+	@SuppressWarnings("unused")
 	private void printGameboard() {
 		for (int i = rows - 1; 0 <= i; i--) {
 			for (int j = 0; j < columns; j++) {
